@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:dividerPadding="1dp"
+              android:minHeight="@dimen/layout_library_height"
+              android:orientation="horizontal"
+              android:showDividers="middle">
+
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:paddingLeft="8dp"
+            android:paddingRight="0dp">
+
+        <FrameLayout
+                android:layout_width="52dp"
+                android:layout_height="match_parent"
+                android:minHeight="48dp">
+
+            <ImageView
+                    android:id="@+id/cover"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/fallback_cover"/>
+            <ImageView
+                    android:id="@+id/mini_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|left"
+                    android:scaleType="fitCenter"/>
+        </FrameLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="4dp">
+
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                <TextView
+                        android:id="@+id/tvApparelName"
+                        android:layout_height="0dp"
+                        android:layout_width="wrap_content"
+                        android:ellipsize="end"
+                        android:textSize="@dimen/name_text_size"
+                        android:layout_weight="1"
+                        android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+                <TextView
+                        android:id="@+id/tvApparelStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:textSize="@dimen/style_text_size"
+                        android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            </LinearLayout>
+            <TextView
+                    android:id="@+id/tvApparelTemperature"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:singleLine="true"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/temperature_text_size"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+            <TextView
+                    android:id="@+id/tvAppareldates"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:ellipsize="marquee"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/date_text_size"
+                    android:textAppearance="?android:attr/textAppearanceMedium"/>
+            <ProgressBar
+                    android:id="@+id/progressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:progress="0"
+                    android:visibility="visible"
+                    android:indeterminate="false"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

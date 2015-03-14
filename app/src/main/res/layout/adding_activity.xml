@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<GridLayout
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:columnCount="1"
+    android:rowCount="4">
+
+    <GridLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_row="0"
+        android:columnCount="2"
+        android:rowCount="2">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageViewAdd"
+            android:layout_column="0"
+            android:layout_columnSpan="1"
+            android:layout_row="0"
+            android:layout_rowSpan="2"
+            android:contentDescription="@string/image_view_adding"
+            android:padding="10dp" />
+
+        <Button
+            android:layout_width="123dp"
+            android:layout_height="63dp"
+            android:textColor="#ffb7adc0"
+            android:text="@string/buttin_photo_add"
+
+            android:id="@+id/btnPhotoAdd"
+            android:layout_column="1"
+            android:layout_row="0"
+            android:padding="10dp" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinnerCatAdd"
+            android:layout_column="1"
+            android:layout_row="1"
+            android:padding="10dp" />
+    </GridLayout>
+
+    <GridLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_row="1"
+        android:columnCount="2"
+        android:rowCount="2">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="@string/textView"
+            android:id="@+id/textViewWarmthAdd"
+            android:layout_column="0"
+            android:layout_row="0"
+            android:textSize="29sp" />
+
+        <GridLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_row="0"
+            android:columnCount="4"
+            android:rowCount="1"
+            android:id="@+id/gridTemp"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="@string/textView_minTemp_add"
+                android:id="@+id/textViewMinTAdd"
+                android:layout_column="0"
+                android:layout_row="0"
+                android:textSize="24sp"
+                android:padding="10dp"
+                android:focusable="false" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextMinTAdd"
+                android:layout_column="1"
+                android:layout_row="0"
+                android:inputType="numberSigned"
+                android:padding="10dp"
+                android:minWidth="60dp"
+                android:focusable="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/textView_maxTemp_add"
+                android:id="@+id/textViewMaxTAdd"
+                android:layout_column="2"
+                android:layout_row="0"
+                android:textSize="24sp"
+                android:padding="10dp"
+                android:focusable="false" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextMaxTAdd"
+                android:layout_row="0"
+                android:layout_column="3"
+                android:inputType="numberSigned"
+                android:minWidth="60dp"
+                android:padding="10dp"
+                android:focusable="true" />
+        </GridLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:text="@string/textView_descr_add"
+            android:id="@+id/textViewDescrAdd"
+            android:layout_column="0"
+            android:layout_row="1"
+            android:textSize="29sp"
+            android:padding="10dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editTextDescrAdd"
+            android:layout_column="1"
+            android:layout_row="1"
+            android:inputType="text"
+            android:minWidth="240dp"
+            android:padding="10dp"
+            android:focusable="true" />
+
+    </GridLayout>
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_column="0"
+        android:layout_row="2"
+        android:showDividers="beginning|end"
+        android:padding="10dp">
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Куда носить:"
+                android:id="@+id/textViewChBAdding"
+                android:textSize="24sp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textColor="#ffc00709"
+                android:text="На прогулку"
+                android:id="@+id/checkBox0"
+                android:onClick="onCheckBoxClick" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="На работу"
+                android:textSize="25sp"
+                android:textColor="#ffc00709"
+                android:id="@+id/checkBox1"
+                android:onClick="onCheckBoxClick" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textColor="#ffc00709"
+                android:text="В театр"
+                android:id="@+id/checkBox2"
+                android:onClick="onCheckBoxClick" />
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_addToWardrobe"
+        android:id="@+id/buttonToWardrobeAdd"
+        android:layout_column="0"
+        android:layout_row="3"
+        android:textSize="24sp"
+        android:textColor="#ffb7adc0"
+        android:padding="10dp" />
+
+</GridLayout>

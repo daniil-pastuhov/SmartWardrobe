@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">SmartWardrobe</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Экшн =)</string>
+
+    <string name="action_settings">Настройки</string>
+    <string name="deg">°</string>
+    <string name="action_refresh" translatable="true">Refresh</string>
+    <string name="action_exit" translatable="true">Exit</string>
+    <string name="action_preferred_location" translatable="true">Preferred location</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+
+    <!-- -->
+    <string name="pref_location_key">location</string>
+    <string name="pref_metric_key">metric</string>
+    <string name="pref_days_key">numbOfDays</string>
+    <string name="pref_days_default">7</string>
+    <string name="pref_location_default">Minsk</string>
+    <string name="main_menu_auto_find">Подобрать одежду</string>
+    <string name="main_menu_catalog">Просмотреть всё</string>
+    <string name="main_menu_find_by_teg">Поиск по тегам</string>
+    <string name="main_menu_find_to_wash">Корзина для стирки</string>
+    <string name="main_menu_pack_to_trip">Собраться в поездку</string>
+    <string name="namelabel">"Название: "</string>
+    <string name="materiallabel">"Материал: "</string>
+    <string name="firstlabel">"Куда идём: "</string>
+    <string name="secondlabel">"Метки: "</string>
+    <string name="washinglabel">"Дата последней стирки: "</string>
+    <string name="wash">В стирку</string>
+    <string name="returnTo">Вернуть в шкаф</string>
+    <string name="add_item">Добавить вещь</string>
+    <string name="delete_item">Удалить вещь</string>
+    <string name="find_by_teg_label">Введите ключевые слова через запятую</string>
+    <string name="buttin_photo_add">Add...</string>
+    <string name="image_view_adding">Picture of the apparel.</string>
+    <string name="textView_name_add">Name:</string>
+    <string name="textView">Т ношения:</string>
+    <string name="textView_descr_add">Описание:</string>
+    <string name="textView_minTemp_add">от</string>
+    <string name="textView_maxTemp_add">до</string>
+    <string name="button_addToWardrobe">Добавить в шкаф!</string>
+    <string name="button_back">Назад</string>
+    <string name="title_catalog_activity">Каталог</string>
+</resources>

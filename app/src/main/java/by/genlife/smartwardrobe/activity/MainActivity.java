@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.constants.Constants;
 import by.genlife.smartwardrobe.constants.Tab;
+import by.genlife.smartwardrobe.fragment.CatalogFragment;
 import by.genlife.smartwardrobe.fragment.NavigationDrawerFragment;
 import by.genlife.smartwardrobe.fragment.AutoSearchFragment;
 
@@ -57,7 +58,7 @@ public class MainActivity extends ActionBarActivity
                 newFragment = AutoSearchFragment.getInstance();
                 break;
             case 1:
-                mTitle = getString(R.string.main_menu_catalog);
+                newFragment = CatalogFragment.getInstance();
                 break;
             case 2:
                 mTitle = getString(R.string.main_menu_find_by_teg);

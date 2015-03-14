@@ -56,6 +56,11 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
+    <AdapterViewFlipper
+        android:id="@+id/aaa"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">

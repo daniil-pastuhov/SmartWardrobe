@@ -9,12 +9,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterViewFlipper;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
@@ -29,6 +30,7 @@ import java.util.List;
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.Utils;
 import by.genlife.smartwardrobe.activity.MainActivity;
+import by.genlife.smartwardrobe.adapter.PageViewAdapter;
 import by.genlife.smartwardrobe.constants.Category;
 import by.genlife.smartwardrobe.constants.Style;
 import by.genlife.smartwardrobe.data.Apparel;
@@ -44,6 +46,7 @@ public class AutoSearchFragment extends Fragment {
      */
     private static AutoSearchFragment instance;
     ViewFlipper suitToDay[];
+    AdapterViewFlipper adapterViewFlipper;
     Context context;
     ProgressBar progressBar;
 
@@ -70,6 +73,8 @@ public class AutoSearchFragment extends Fragment {
         context = inflater.getContext();
         int adapterViewFlipperIds[] = {R.id.vf_head, R.id.vf_under_body, R.id.vf_body_out, R.id.vf_pants, R.id.vf_boots};
         suitToDay = new ViewFlipper[adapterViewFlipperIds.length];
+        adapterViewFlipper = (AdapterViewFlipper) rootView.findViewById(R.id.aaa);
+
         for (int i = 0; i < adapterViewFlipperIds.length; ++i) {
             suitToDay[i] = (ViewFlipper) rootView.findViewById(adapterViewFlipperIds[i]);
         }
@@ -79,7 +84,7 @@ public class AutoSearchFragment extends Fragment {
         final SpinnerAdapter spAdapter1 = new ArrayAdapter<String>(context, R.layout.list_item_category, arr1);
         sp1.setAdapter(spAdapter1);
         String filePath = Utils.getHomeDirectory();
-        final ArrayList<Apparel> apparelList = new ArrayList<Apparel>(Arrays.asList(new Apparel(filePath + "head.jpg", "Самое модная шапка", "45", "Зелёная", Category.HEADDRESS, new HashSet<>(new ArrayList<Style>() {{
+        final ArrayList<Apparel> apparelList = new ArrayList<Apparel>(Arrays.asList(new Apparel(filePath + "head.jpg", "Самая модная шапка", "45", "Зелёная", Category.HEADDRESS, new HashSet<>(new ArrayList<Style>() {{
             add(Style.DAILY);
         }}), new LinkedList<String>() {{
             add("Красивый");
@@ -93,10 +98,16 @@ public class AutoSearchFragment extends Fragment {
             add("Школьные ещё");
         }}, -1, 25, "25-06-1994", "25-06-1994")));
         View v = inflater.inflate(R.layout.listview_item, null);
-        suitToDay[0].addView(new ImageView(context) {{
-            setImageBitmap(apparelList.get(0).getCover());
-        }});
-        //suitToDay[0].addView(v);
+        PageViewAdapter adapter = new PageViewAdapter(context, R.layout.mini_item);
+        adapter.addAll(apparelList);
+        adapterViewFlipper.setAdapter(adapter);
+        adapterViewFlipper.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                adapterViewFlipper.showNext();
+                return false;
+            }
+        });
 
         Button btnChange = (Button) rootView.findViewById(R.id.btnChange);
         btnChange.setOnClickListener(new View.OnClickListener() {

@@ -1,7 +1,7 @@
 package by.genlife.smartwardrobe.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,12 +28,12 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
     private LayoutInflater inflater;
     private Filter filter;
     private Object lock = new Object();
-    private Activity activity;
+    private Context context;
 
-    public ListViewAdapter(Activity activity, int resource) {
-        super(activity, resource);
-        this.activity = activity;
-        this.inflater = LayoutInflater.from(activity);
+    public ListViewAdapter(Context context, int resource) {
+        super(context, resource);
+        this.context = context;
+        this.inflater = LayoutInflater.from(context);
         mObjects = new ArrayList<Apparel>();
     }
 
@@ -64,7 +64,7 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
             int progress = apparel.getWearProgress();
             holder.wearProgress.setProgress(progress);
             holder.styles.setText(Style.parseToString(apparel.getStyles()));
-            holder.temperature.setText(apparel.getMinT() + activity.getString(R.string.deg) + "—" + apparel.getMaxT() + activity.getString(R.string.deg));
+            holder.temperature.setText(apparel.getMinT() + context.getString(R.string.deg) + "—" + apparel.getMaxT() + context.getString(R.string.deg));
             if (progress > 90) holder.miniLabel.setImageResource(R.drawable.fu);
             else {
                 if (apparel.getDate_of_buying().equals(apparel.getDate_of_last_wearing()))
@@ -105,17 +105,7 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
                 mOriginalValues.addAll(apparels);
             }
             mObjects.addAll(apparels);
-            redraw();
         }
-    }
-
-    private void redraw() {
-        activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                notifyDataSetChanged();
-            }
-        });
     }
 
     @Override
@@ -125,7 +115,6 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
                 mOriginalValues.add(object);
             }
             mObjects.add(object);
-            redraw();
         }
     }
 
@@ -139,7 +128,6 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
                 mObjects = new ArrayList<>();
             }
             mObjects.add(index, object);
-            redraw();
         }
     }
 
@@ -158,7 +146,6 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
                 mOriginalValues.addAll(collection);
             }
             mObjects.addAll(collection);
-            redraw();
         }
     }
 
@@ -169,7 +156,6 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
                 mOriginalValues.clear();
             }
             mObjects.clear();
-            redraw();
         }
     }
 
@@ -180,7 +166,6 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
                 mOriginalValues.remove(object);
             }
             mObjects.remove(object);
-            redraw();
         }
     }
 
@@ -250,7 +235,6 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
         @Override
         protected void publishResults(CharSequence constraint, final FilterResults results) {
             mObjects = (ArrayList<Apparel>) results.values;
-            redraw();
         }
     }
 }

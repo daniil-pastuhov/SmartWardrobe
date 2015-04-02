@@ -22,9 +22,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.List;
+import java.util.StringTokenizer;
 import java.util.UUID;
 
 import by.genlife.smartwardrobe.R;
@@ -46,7 +48,7 @@ public class AddNewItemFragment extends Fragment implements Constants {
     Button addItem;
     Spinner categories;
     Bitmap curPhoto;
-    EditText tmin, tmax, name;
+    EditText tmin, tmax, name, color, tags;
 
     public AddNewItemFragment() {
     }
@@ -68,7 +70,10 @@ public class AddNewItemFragment extends Fragment implements Constants {
         tmin = (EditText) rootView.findViewById(R.id.min_temp);
         tmax = (EditText) rootView.findViewById(R.id.max_temp);
         name = (EditText) rootView.findViewById(R.id.name);
+        color = (EditText) rootView.findViewById(R.id.color);
+        tags = (EditText) rootView.findViewById(R.id.etTags);
         final LinearLayout styleLayout = (LinearLayout) rootView.findViewById(R.id.style_layout);
+
         for (final String styleStr: Style.getStylesStr()) {
             styleLayout.addView(new CheckBox(context) {{setText(styleStr);}});
         }
@@ -80,14 +85,15 @@ public class AddNewItemFragment extends Fragment implements Constants {
                     String path = saveToFile(curPhoto);
                     Integer min = Integer.parseInt(tmin.getText().toString());
                     Integer max = Integer.parseInt(tmax.getText().toString());
+                    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+                    String date = format.format(new Date());
                     HashSet<Style> styles = new HashSet<>();
                     for (int i = 0; i < styleLayout.getChildCount(); ++i) {
                         styles.add(Style.getStyle(((CheckBox)styleLayout.getChildAt(i)).getText().toString()));
                     }
-                    Apparel apparel = new Apparel(path, name.getText().toString(), "Зелёная",
-                            Category.getByType(categories.getSelectedItem().toString()), styles, new LinkedList<String>() {{
-                        add("Красивый");
-                    }}, min, max, "25-06-1994", "25-06-1994");
+                    Apparel apparel = new Apparel(path, name.getText().toString(), color.getText().toString(),
+                            Category.getByType(categories.getSelectedItem().toString()), styles, getTags(tags.getText().toString()),
+                            min, max, date, date);
                     WardrobeManager.getInstance(context).addApparel(apparel);
                 } catch (IOException e) {
                     System.err.println(e.getMessage());
@@ -95,6 +101,14 @@ public class AddNewItemFragment extends Fragment implements Constants {
             }
         });
         return rootView;
+    }
+
+    private List<String> getTags(String s) {
+        ArrayList<String> res = new ArrayList<>();
+        StringTokenizer st = new StringTokenizer(s);
+        while (st.hasMoreTokens())
+            res.add(st.nextToken());
+        return res;
     }
 
     private String saveToFile(Bitmap curPhoto) throws IOException {

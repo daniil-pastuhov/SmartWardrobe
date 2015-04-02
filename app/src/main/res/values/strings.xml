@@ -39,6 +39,8 @@
     <string name="textView_name_add">Name:</string>
     <string name="textView">Т ношения:</string>
     <string name="textView_descr_add">Описание:</string>
+    <string name="color">Цвет:</string>
+    <string name="tags">Метки (тэги для поиска):</string>
     <string name="textView_minTemp_add">от</string>
     <string name="textView_maxTemp_add">до</string>
     <string name="button_addToWardrobe">Добавить в шкаф!</string>

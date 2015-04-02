@@ -98,6 +98,36 @@
             android:minWidth="240dp"
             android:padding="10dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/color"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:minWidth="240dp"
+            android:padding="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:text="@string/tags"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/etTags"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:minWidth="240dp"
+            android:padding="10dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -109,7 +139,7 @@
                 android:id="@+id/textViewChBAdding"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Куда носить:"
+                android:text="Стили:"
                 android:textSize="24sp" />
             <LinearLayout
                 android:id="@+id/style_layout"
@@ -123,7 +153,7 @@
             android:id="@+id/buttonToWardrobeAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
+            android:padding="16dp"
             android:text="@string/button_addToWardrobe"
             android:textColor="#ffb7adc0"
             android:textSize="24sp" />

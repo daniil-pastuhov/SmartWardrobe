@@ -3,20 +3,17 @@ package by.genlife.smartwardrobe.data;
 import android.content.Context;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import by.genlife.smartwardrobe.constants.Category;
-import by.genlife.smartwardrobe.listener.TaskSuccessListener;
+import by.genlife.smartwardrobe.listener.OnTaskCompleteListener;
 
 /**
  * Created by NotePad.by on 14.03.2015.
  */
-public class WardrobeManager implements TaskSuccessListener, ApparelRepository {
-    public static final String REPO_NAME = "";
+public class WardrobeManager implements ApparelRepository {
     protected Context context;
     private static WardrobeManager instance;
     private Object lock = new Object();
@@ -47,7 +44,28 @@ public class WardrobeManager implements TaskSuccessListener, ApparelRepository {
 
     private WardrobeManager(Context context) {
         this.context = context;
-        DBHelper.getInstance(context).getAll(this);
+        DBHelper.getInstance(context).getAll(new OnTaskCompleteListener<ArrayList<Apparel>>() {
+
+
+            @Override
+            public void success(final ArrayList<Apparel> result) {
+                synchronized (lock) {
+                    clothes.addAll(result);
+                }
+                ArrayList<Apparel>[] arr = new ArrayList[Category.values().length];
+                for (int i = 0; i < arr.length; ++i) {
+                    arr[i] = new ArrayList<Apparel>();
+                    catalog.put(Category.values()[i], arr[i]);
+                }
+                for (Apparel apparel : clothes) {
+                    arr[apparel.getCategory().ordinal()].add(apparel);
+                }
+            }
+            @Override
+            public void error(String message) {
+                System.err.println(message);
+            }
+        });
     }
 
     @Override
@@ -149,19 +167,9 @@ public class WardrobeManager implements TaskSuccessListener, ApparelRepository {
     }
 
     @Override
-    public Apparel getById(Integer id) {
-        int index = Collections.binarySearch(clothes, new Apparel(id), new Comparator<Apparel>() {
-            @Override
-            public int compare(Apparel apparel, Apparel apparel2) {
-                return (int) (apparel2.getId() - apparel.getId());
-            }
-        });
-        return clothes.get(index);
-    }
-
-    @Override
     public void addApparel(Apparel app) {
-//        clothes.add(app);
+        clothes.add(app);
+        DBHelper.getInstance(context).insert(app);
 //        if (app.getInWash()) {
 //            wash.add(app);
 //        }
@@ -181,7 +189,8 @@ public class WardrobeManager implements TaskSuccessListener, ApparelRepository {
 //            wash.remove(app);
 //        }
 //        catalog.get(app.getCategory()).remove(app);
-//        clothes.remove(app);
+        clothes.remove(app);
+        DBHelper.getInstance(context).delete(app);
     }
 
     @Override
@@ -207,20 +216,5 @@ public class WardrobeManager implements TaskSuccessListener, ApparelRepository {
     @Override
     public void removeTarget(String s) {
         targets.remove(s);
-    }
-
-    @Override
-    public void success(final ArrayList<Apparel> result) {
-        synchronized (lock) {
-            clothes.addAll(result);
-        }
-        ArrayList<Apparel>[] arr = new ArrayList[Category.values().length];
-        for (int i = 0; i < arr.length; ++i) {
-            arr[i] = new ArrayList<Apparel>();
-            catalog.put(Category.values()[i], arr[i]);
-        }
-        for (Apparel apparel : clothes) {
-            arr[apparel.getCategory().ordinal()].add(apparel);
-        }
     }
 }

@@ -14,14 +14,14 @@ import java.util.List;
 import by.genlife.smartwardrobe.constants.Category;
 import by.genlife.smartwardrobe.constants.Style;
 import by.genlife.smartwardrobe.constants.Tags;
-import by.genlife.smartwardrobe.listener.TaskSuccessListener;
+import by.genlife.smartwardrobe.listener.OnTaskCompleteListener;
 
 /**
  * Created by NotePad.by on 14.03.2015.
  */
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
     private static final String DB_NAME = "catalog";
     private static DBHelper instance = null;
     private Context context;
@@ -48,19 +48,23 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + DB_NAME + " (" + "name text," + "id integer primary key autoincrement," + "image_path text" + "size text," + "color text," + "temperature_min int," + "temperature_max int," + "styles text," + "category text," + "tags text," + "wear_progress integer," + "date_of_buying text," + "date_of_last_wearing text" + ");");
+        db.execSQL("create table " + DB_NAME + " (" + "name text," + "image_path text primary key,"
+                + "size text," + "color text," + "temperature_min int," + "temperature_max int,"
+                + "styles text," + "category text," + "tags text," + "wear_progress integer,"
+                + "date_of_buying text," + "date_of_last_wearing text" + ");");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        db.execSQL("DROP TABLE IF EXISTS " + DB_NAME);
+        onCreate(db);
     }
 
     public void insert(Apparel data) {
         new InsertTask(data).execute();
     }
 
-    public void getAll(TaskSuccessListener listener) {
+    public void getAll(OnTaskCompleteListener listener) {
         new GetAllTask(listener).execute();
     }
 
@@ -74,9 +78,9 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private class GetAllTask extends AsyncTask<Void, Void, ArrayList<Apparel>> {
 
-        private TaskSuccessListener listener;
+        private OnTaskCompleteListener listener;
 
-        public GetAllTask(TaskSuccessListener listener) {
+        public GetAllTask(OnTaskCompleteListener listener) {
             this.listener = listener;
         }
 
@@ -85,7 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
             ArrayList<Apparel> all = new ArrayList<>();
             Cursor c = getReadableDatabase().query(DB_NAME, null, null, null, null, null, null);
             while (c.moveToNext()) {
-                String imagePath, name, size, color;
+                String imagePath, name, color;
                 Category category;
                 List<String> tags;
                 HashSet<Style> styles = Style.parseString(c.getString(c.getColumnIndex("styles")));
@@ -93,7 +97,6 @@ public class DBHelper extends SQLiteOpenHelper {
                 String date_of_last_wearing, date_of_buying;
                 imagePath = c.getString(c.getColumnIndex("image_path"));
                 name = c.getString(c.getColumnIndex("name"));
-                size = c.getString(c.getColumnIndex("size"));
                 color = c.getString(c.getColumnIndex("color"));
                 date_of_buying = c.getString(c.getColumnIndex("date_of_buying"));
                 date_of_last_wearing = c.getString(c.getColumnIndex("date_of_last_wearing"));
@@ -101,9 +104,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 minT = c.getInt(c.getColumnIndex("temperature_min"));
                 maxT = c.getInt(c.getColumnIndex("temperature_max"));
                 tags = Tags.parseString(c.getString(c.getColumnIndex("tags")));
-                Integer id = c.getInt(c.getColumnIndex("id"));
                 Integer wearProgress = c.getInt(c.getColumnIndex("wear_progress"));
-                Apparel data = new Apparel(id, imagePath, name, size, color, category, styles, tags, minT, maxT, date_of_last_wearing, date_of_buying);
+                Apparel data = new Apparel(imagePath, name, color, category, styles, tags, minT, maxT, date_of_last_wearing, date_of_buying);
                 data.setWearProgress(wearProgress);
                 all.add(data);
             }
@@ -127,8 +129,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         @Override
         protected Void doInBackground(Void... params) {
-            Integer id = data.getId();
-            getWritableDatabase().delete(DB_NAME, "id = " + "('" + id + "')", null);
+            getWritableDatabase().delete(DB_NAME, "image_path = " + "('" + data.getImagePath() + "')", null);
             return null;
         }
     }
@@ -152,8 +153,6 @@ public class DBHelper extends SQLiteOpenHelper {
             cv.put("temperature_min", data.getMinT());
             cv.put("temperature_max", data.getMaxT());
             cv.put("image_path", data.getImagePath());
-            cv.put("id", data.getId());
-            cv.put("size", data.getSize());
             cv.put("category", data.getCategory().name());
             cv.put("tags", Tags.parseToString(data.getTags()));
             getWritableDatabase().insert(DB_NAME, null, cv);

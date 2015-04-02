@@ -1,16 +1,15 @@
 package by.genlife.smartwardrobe.task;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.text.Html;
-import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.SpannedString;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -26,33 +25,37 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import by.genlife.smartwardrobe.constants.Constants;
+import by.genlife.smartwardrobe.listener.OnTaskCompleteListener;
+
 /**
  * Created by NotePad.by on 14.03.2015.
  */
-public class FetchWeatherTask extends AsyncTask<String, Void, String> {
+public class FetchWeatherTask extends AsyncTask<String, Void, String> implements Constants{
     private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
-    SpannableString errorString = new SpannableString("Проверьте соединение");
+    String errorString = "Проверьте соединение";
     private Context context;
-    private TextView adapter;
-    public FetchWeatherTask (Context context, TextView adapter) {
+    private OnTaskCompleteListener<String> listener;
+    public FetchWeatherTask (Context context, OnTaskCompleteListener<String> listener) {
         this.context = context;
-        this.adapter = adapter;
+        this.listener = listener;
     }
     @Override
     protected void onPostExecute(String s) {
 
         if (s!=null && !s.toString().isEmpty()) {
             try {
-                SpannedString[] strings = getWeatherDataFromJson(s, 1);
-                adapter.setText(strings[0]);
+                String[] strings = getWeatherDataFromJson(s, 1);
+                context.sendBroadcast(new Intent(ACTION_WEATHER).putExtra(EXTRA_WEATHER, strings[0]));
+                listener.success(strings[0]);
             } catch (JSONException e) {
                 Log.e(LOG_TAG, "Unexpected", e);
             }
         }
 
         else  {
-            Toast.makeText(context, "Проверьте соединение", Toast.LENGTH_LONG);
-            adapter.setText(errorString);
+            Toast.makeText(context, errorString, Toast.LENGTH_LONG);
+            listener.error(errorString);
         }
         super.onPostExecute(s);
     }
@@ -127,7 +130,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String> {
         }
         return forecastJsonStr;
     }
-    private SpannedString[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
+    private String[] getWeatherDataFromJson(String forecastJsonStr, int numDays)
             throws JSONException {
 
         final String OWM_LIST = "list";
@@ -141,7 +144,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String> {
         JSONObject forecastJson = new JSONObject(forecastJsonStr);
         JSONArray weatherArray = forecastJson.getJSONArray(OWM_LIST);
 
-        SpannedString[] resultSpans = new SpannedString[numDays];
+        String[] resultSpans = new String[numDays];
         for(int i = 0; i < weatherArray.length(); i++) {
             String day;
             String description;
@@ -160,7 +163,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String> {
             double low = temperatureObject.getDouble(OWM_MIN);
 
             highAndLow = formatHighLows(high, low);
-            resultSpans[i] = new SpannedString(day + " - " + description + " - " + highAndLow);
+            resultSpans[i] = new String(day + " - " + description + " - " + highAndLow);
         }
 
         return resultSpans;

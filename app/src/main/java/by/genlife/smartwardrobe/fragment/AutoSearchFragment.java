@@ -5,7 +5,10 @@ package by.genlife.smartwardrobe.fragment;
  */
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,39 +18,39 @@ import android.view.ViewGroup;
 import android.widget.AdapterViewFlipper;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.Utils;
 import by.genlife.smartwardrobe.activity.MainActivity;
 import by.genlife.smartwardrobe.adapter.PageViewAdapter;
-import by.genlife.smartwardrobe.constants.Category;
-import by.genlife.smartwardrobe.constants.Style;
+import by.genlife.smartwardrobe.constants.Constants;
 import by.genlife.smartwardrobe.data.Apparel;
 import by.genlife.smartwardrobe.data.WardrobeManager;
 
 /**
  * A placeholder fragment containing a simple view.
  */
-public class AutoSearchFragment extends Fragment {
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
+public class AutoSearchFragment extends Fragment implements Constants{
+    public static final String TAG = AutoSearchFragment.class.getSimpleName();
+
+    BroadcastReceiver weatherReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            tvWeather.setText(intent.getStringExtra(EXTRA_WEATHER));
+        }
+    };
     private static AutoSearchFragment instance;
     ViewFlipper suitToDay[];
     AdapterViewFlipper adapterViewFlipper;
     Context context;
+    TextView tvWeather;
     ProgressBar progressBar;
 
     /**
@@ -68,7 +71,17 @@ public class AutoSearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.today_suit, container, false);
-        final EditText editText = (EditText) rootView.findViewById(R.id.findByTegs);
+        tvWeather = (TextView) rootView.findViewById(R.id.tvWeather);
+//        WeatherService.setListener(new OnTaskCompleteListener<String>() {
+//            @Override
+//            public void success(String result) {
+//                tvWeather.setText(result);
+//            }
+//
+//            @Override
+//            public void error(String message) {
+//                tvWeather.setVisibility(View.GONE);
+//            }});
         //TODO delete this code below
         context = inflater.getContext();
         int adapterViewFlipperIds[] = {R.id.vf_head, R.id.vf_under_body, R.id.vf_body_out, R.id.vf_pants, R.id.vf_boots};
@@ -84,19 +97,20 @@ public class AutoSearchFragment extends Fragment {
         final SpinnerAdapter spAdapter1 = new ArrayAdapter<String>(context, R.layout.list_item_category, arr1);
         sp1.setAdapter(spAdapter1);
         String filePath = Utils.getHomeDirectory();
-        final ArrayList<Apparel> apparelList = new ArrayList<Apparel>(Arrays.asList(new Apparel(filePath + "head.jpg", "Самая модная шапка", "45", "Зелёная", Category.HEADDRESS, new HashSet<>(new ArrayList<Style>() {{
-            add(Style.DAILY);
-        }}), new LinkedList<String>() {{
-            add("Красивый");
-        }}, 18, 25, "25-06-1994", "25-06-1994"), new Apparel(filePath + "ex.jpg", "рубашка", "М", "Синяя", Category.SHIRT, new HashSet<>(new ArrayList<Style>() {{
-            add(Style.DAILY);
-        }}), new LinkedList<String>() {{
-            add("Подарок");
-        }}, 10, 20, "25-07-1994", "25-07-1994"), new Apparel(filePath + "trousers.jpg", "Любимые брюки", "48-52", "Темно-синие", Category.TROUSERS, new HashSet<>(new ArrayList<Style>() {{
-            add(Style.HOME);
-        }}), new LinkedList<String>() {{
-            add("Школьные ещё");
-        }}, -1, 25, "25-06-1994", "25-06-1994")));
+//        List<Apparel> apparelList = new ArrayList<Apparel>(Arrays.asList(new Apparel(filePath + "head.jpg", "Самая модная шапка", "Зелёная", Category.HEADDRESS, new HashSet<>(new ArrayList<Style>() {{
+//            add(Style.DAILY);
+//        }}), new LinkedList<String>() {{
+//            add("Красивый");
+//        }}, 18, 25, "25-06-1994", "25-06-1994"), new Apparel(filePath + "ex.jpg", "рубашка", "Синяя", Category.SHIRT, new HashSet<>(new ArrayList<Style>() {{
+//            add(Style.DAILY);
+//        }}), new LinkedList<String>() {{
+//            add("Подарок");
+//        }}, 10, 20, "25-07-1994", "25-07-1994"), new Apparel(filePath + "trousers.jpg", "Любимые брюки", "Темно-синие", Category.TROUSERS, new HashSet<>(new ArrayList<Style>() {{
+//            add(Style.HOME);
+//        }}), new LinkedList<String>() {{
+//            add("Школьные ещё");
+//        }}, -1, 25, "25-06-1994", "25-06-1994")));
+        List<Apparel> apparelList = WardrobeManager.getInstance(context).getAll();
         View v = inflater.inflate(R.layout.listview_item, null);
         PageViewAdapter adapter = new PageViewAdapter(context, R.layout.mini_item);
         adapter.addAll(apparelList);
@@ -119,6 +133,7 @@ public class AutoSearchFragment extends Fragment {
                 //TODO apprel = getTodaySuit(s, k, g, d, t, k);
             }
         });
+        context.registerReceiver(weatherReceiver, new IntentFilter(ACTION_WEATHER));
         return rootView;
     }
 
@@ -126,5 +141,11 @@ public class AutoSearchFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((MainActivity) activity).onSectionAttached();
+    }
+
+    @Override
+    public void onDestroy() {
+        context.unregisterReceiver(weatherReceiver);
+        super.onDestroy();
     }
 }

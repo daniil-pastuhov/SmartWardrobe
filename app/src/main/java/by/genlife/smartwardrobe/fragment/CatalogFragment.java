@@ -28,6 +28,7 @@ import by.genlife.smartwardrobe.data.WardrobeManager;
  * Created by NotePad.by on 14.03.2015.
  */
 public class CatalogFragment extends Fragment {
+    public static final String TAG = CatalogFragment.class.getSimpleName();
 
     final MainMenuState mainMenuState = new MainMenuState();
     final CategoryMenuState categoryMenuState = new CategoryMenuState();

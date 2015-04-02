@@ -15,6 +15,7 @@ import by.genlife.smartwardrobe.activity.MainActivity;
  * Created by NotePad.by on 14.03.2015.
  */
 public class DetailFragment extends Fragment {
+    public static final String TAG = DetailFragment.class.getSimpleName();
 
     private static DetailFragment instance;
     Context context;

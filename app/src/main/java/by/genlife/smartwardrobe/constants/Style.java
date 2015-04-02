@@ -16,24 +16,24 @@ public enum Style {
     THEATRE("В театр"),
     PICKNIK("На природу");
 
-    private String type;
+    private String description;
 
-    Style(String type) {
-        this.type = type;
+    Style(String description) {
+        this.description = description;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getType() {
-        return type;
+    public String getDescription() {
+        return description;
     }
 
-    public static List<String> getStyles() {
+    public static List<String> getStylesStr() {
         List<String> res = new ArrayList<String>();
         for (Style c : values()) {
-            res.add(c.getType());
+            res.add(c.getDescription());
         }
         return res;
     }
@@ -50,9 +50,16 @@ public enum Style {
     public static String parseToString(HashSet<Style> styles) {
         StringBuilder sb = new StringBuilder();
         for (Style style : styles) {
-            sb.append(style.type);
-            sb.append("; ");
+            sb.append(style.name());
+            sb.append(Constants.styleSeparator);
         }
         return sb.toString();
+    }
+
+    public static Style getStyle(String description) {
+        for (Style style : Style.values())
+            if (style.description.equals(description))
+                return style;
+        return null;
     }
 }

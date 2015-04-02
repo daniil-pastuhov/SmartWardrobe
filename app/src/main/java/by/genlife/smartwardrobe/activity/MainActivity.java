@@ -1,5 +1,6 @@
 package by.genlife.smartwardrobe.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,9 +13,12 @@ import android.view.MenuItem;
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.constants.Constants;
 import by.genlife.smartwardrobe.constants.Tab;
+import by.genlife.smartwardrobe.data.WardrobeManager;
+import by.genlife.smartwardrobe.fragment.AddNewItemFragment;
+import by.genlife.smartwardrobe.fragment.AutoSearchFragment;
 import by.genlife.smartwardrobe.fragment.CatalogFragment;
 import by.genlife.smartwardrobe.fragment.NavigationDrawerFragment;
-import by.genlife.smartwardrobe.fragment.AutoSearchFragment;
+import by.genlife.smartwardrobe.service.WeatherService;
 
 
 public class MainActivity extends ActionBarActivity
@@ -29,12 +33,13 @@ public class MainActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    private Fragment prevFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        WardrobeManager.getInstance(this);
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -45,6 +50,8 @@ public class MainActivity extends ActionBarActivity
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         if (savedInstanceState != null) {
             curFragment = savedInstanceState.getInt(STATE_CUR_FRAGMENT, 0);
+        } else {
+            startService(new Intent(this, WeatherService.class));
         }
     }
 
@@ -53,12 +60,16 @@ public class MainActivity extends ActionBarActivity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment newFragment = null;
+        curFragment = position;
+        String tag = null;
         switch (position) {
             case 0:
                 newFragment = AutoSearchFragment.getInstance();
+                tag = AutoSearchFragment.TAG;
                 break;
             case 1:
                 newFragment = CatalogFragment.getInstance();
+                tag = CatalogFragment.TAG;
                 break;
             case 2:
                 mTitle = getString(R.string.main_menu_find_by_teg);
@@ -71,7 +82,7 @@ public class MainActivity extends ActionBarActivity
                 break;
         }
         fragmentManager.beginTransaction()
-                .replace(R.id.container, newFragment).commit();
+                .replace(R.id.container, newFragment, tag).commit();
     }
 
     public void onSectionAttached() {
@@ -84,7 +95,6 @@ public class MainActivity extends ActionBarActivity
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -110,6 +120,13 @@ public class MainActivity extends ActionBarActivity
         if (id == R.id.action_settings) {
             return true;
         }
+        switch (id) {
+            case R.id.action_add:
+                System.err.println(getSupportFragmentManager().getFragments());
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container, new AddNewItemFragment(), AddNewItemFragment.TAG).commit();
+                break;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -118,5 +135,11 @@ public class MainActivity extends ActionBarActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_CUR_FRAGMENT, curFragment);
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(new Intent(this, WeatherService.class));
+        super.onDestroy();
     }
 }

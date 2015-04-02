@@ -26,4 +26,14 @@
     <string-array name="n4">
         <item>Состояние</item>
     </string-array>
+    <string-array name="categories_type">
+        <item>Цвет</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
 </resources>

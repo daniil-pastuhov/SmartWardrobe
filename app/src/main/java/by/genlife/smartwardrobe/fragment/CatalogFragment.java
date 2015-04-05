@@ -79,7 +79,7 @@ public class CatalogFragment extends Fragment implements Constants {
                     curCategory = adapterView.getAdapter().getItem(i).toString();
                     showApparelsByCategory(curCategory);
                 } else {
-                    //TODO open details new Intent
+                    curCategory = null;
                 }
             }
         });
@@ -109,6 +109,7 @@ public class CatalogFragment extends Fragment implements Constants {
         addFilter(builder);
         List<Apparel> tempList = manager.getByParams(builder.build());
         ListViewAdapter adapter = new ListViewAdapter(context, R.layout.listview_item);
+        adapter.clear();
         adapter.addAll(tempList);
         lst.setAdapter(adapter);
     }
@@ -153,6 +154,17 @@ public class CatalogFragment extends Fragment implements Constants {
     }
 
     private void createSpinners(View rootView, Bundle savedInstanceState) {
+        AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                showApparelsByCategory(curCategory);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        };
         season = (Spinner) rootView.findViewById(R.id.spinner2);
         style = (Spinner) rootView.findViewById(R.id.spinner3);
         color = (Spinner) rootView.findViewById(R.id.spinner4);
@@ -170,12 +182,20 @@ public class CatalogFragment extends Fragment implements Constants {
         color.setAdapter(ad3);
         clean.setAdapter(ad4);
         if (savedInstanceState != null) {
+            season.setOnItemSelectedListener(null);
+            style.setOnItemSelectedListener(null);
+            color.setOnItemSelectedListener(null);
+            clean.setOnItemSelectedListener(null);
             int[] pos = savedInstanceState.getIntArray(STATE_SPINNER_CATALOG);
             season.setSelection(pos[0]);
             style.setSelection(pos[0]);
             color.setSelection(pos[0]);
             clean.setSelection(pos[0]);
         }
+        season.setOnItemSelectedListener(listener);
+        style.setOnItemSelectedListener(listener);
+        color.setOnItemSelectedListener(listener);
+        clean.setOnItemSelectedListener(listener);
     }
 
     public void onBackClick(View v) {

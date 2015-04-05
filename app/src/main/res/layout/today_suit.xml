@@ -146,25 +146,26 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:showDividers="middle">
 
                 <AdapterViewFlipper
                     android:id="@+id/vf_under_body"
-                    android:layout_width="wrap_content"
+                    android:layout_width="160dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left" />
+                    android:padding="10dp" />
 
                 <AdapterViewFlipper
                     android:id="@+id/vf_body_sweater"
-                    android:layout_width="wrap_content"
+                    android:layout_width="160dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
+                    android:padding="10dp" />
 
                 <AdapterViewFlipper
                     android:id="@+id/vf_body_out"
-                    android:layout_width="wrap_content"
+                    android:layout_width="160dp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right" />
+                    android:padding="10dp" />
             </LinearLayout>
 
             <LinearLayout

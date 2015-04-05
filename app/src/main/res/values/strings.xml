@@ -12,6 +12,13 @@
     <string name="title_activity_detail">DetailActivity</string>
     <string name="title_activity_settings">SettingsActivity</string>
 
+    <!-- Auto Search-->
+    <string name="strict">Строго</string>
+    <string name="style_asf">Стиль: </string>
+    <string name="show_params">Показать параметры поиска</string>
+    <string name="new_asf">Новое</string>
+    <string name="clean_asf">Чистое</string>
+    <string name="for_weather_asf">По погоде</string>
 
     <!-- -->
     <string name="pref_location_key">location</string>
@@ -26,8 +33,7 @@
     <string name="main_menu_pack_to_trip">Собраться в поездку</string>
     <string name="namelabel">"Название: "</string>
     <string name="materiallabel">"Материал: "</string>
-    <string name="firstlabel">"Куда идём: "</string>
-    <string name="secondlabel">"Метки: "</string>
+    <string name="color_asf">"Цвет: "</string>
     <string name="washinglabel">"Дата последней стирки: "</string>
     <string name="wash">В стирку</string>
     <string name="returnTo">Вернуть в шкаф</string>

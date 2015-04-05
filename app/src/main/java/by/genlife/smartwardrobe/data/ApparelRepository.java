@@ -1,28 +1,25 @@
 package by.genlife.smartwardrobe.data;
 
 import java.util.List;
+import java.util.Map;
+
+import by.genlife.smartwardrobe.constants.Category;
 
 /**
  * Created by NotePad.by on 14.03.2015.
  */
 public interface ApparelRepository {
     List<Apparel> getAll();
-    List<Apparel> getByCategory(String category);
-    List<Apparel> getByTarget(String target);
-    List<Apparel> getDirty();
-    List<Apparel> getNotInWash();
-    List<Apparel> getInWash();
 
-    List<Apparel> getTopByTarget(String target);
-    List<Apparel> getBottomByTarget(String target);
-    List<Apparel> getMiddleByTarget(String target);
-    List<Apparel> getAccessoriseByTarget(String target);
+    List<Apparel> getByParams(Parameters parameters);
 
-    void setWash(Apparel app, boolean flag);
+    Map<Category, List<Apparel>> getTodaySuits(Parameters parameters);
+
     void addApparel(Apparel app);
+
     void deleteApparel(Apparel app);
 
-    List<String> getTargetCategories();
-    void addTarget(String s);
-    void removeTarget(String s);
+    List<String> seachByTags(String... tags);
+
+    List<String> getAllColors();
 }

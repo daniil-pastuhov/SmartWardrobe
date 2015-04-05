@@ -49,6 +49,8 @@ public class AddNewItemFragment extends Fragment implements Constants {
     Spinner categories;
     Bitmap curPhoto;
     EditText tmin, tmax, name, color, tags;
+    LinearLayout styleLayout;
+    boolean[] styleArr;
 
     public AddNewItemFragment() {
     }
@@ -58,6 +60,11 @@ public class AddNewItemFragment extends Fragment implements Constants {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.adding_item, container, false);
         context = inflater.getContext();
+        if (savedInstanceState == null) {
+            styleArr = new boolean[Style.size()];
+        } else {
+            styleArr = savedInstanceState.getBooleanArray(STATE_STYLES_CHECKED);
+        }
         rootView.findViewById(R.id.btnPhotoAdd).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,6 +72,16 @@ public class AddNewItemFragment extends Fragment implements Constants {
             }
         });
         thumbnail = (ImageView) rootView.findViewById(R.id.imageViewAdd);
+        thumbnail.setOnClickListener(new View.OnClickListener() {
+            int rotation = 90;
+
+            @Override
+            public void onClick(View v) {
+                ImageView imageView = (ImageView) v;
+                imageView.setRotation(rotation);
+                rotation += 90;
+            }
+        });
         addItem = (Button) rootView.findViewById(R.id.buttonToWardrobeAdd);
         categories = (Spinner) rootView.findViewById(R.id.category_spinner);
         tmin = (EditText) rootView.findViewById(R.id.min_temp);
@@ -72,11 +89,17 @@ public class AddNewItemFragment extends Fragment implements Constants {
         name = (EditText) rootView.findViewById(R.id.name);
         color = (EditText) rootView.findViewById(R.id.color);
         tags = (EditText) rootView.findViewById(R.id.etTags);
-        final LinearLayout styleLayout = (LinearLayout) rootView.findViewById(R.id.style_layout);
-
-        for (final String styleStr: Style.getStylesStr()) {
-            styleLayout.addView(new CheckBox(context) {{setText(styleStr);}});
+        styleLayout = (LinearLayout) rootView.findViewById(R.id.style_layout);
+        for (int i = 0; i < Style.size(); ++i) {
+            final int k = i;
+            styleLayout.addView(new CheckBox(context) {
+                {
+                    setText(Style.values()[k].getDescription());
+                    setChecked(styleArr[k]);
+                }
+            });
         }
+
         categories.setAdapter(new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, Category.getCategories()));
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,20 +110,39 @@ public class AddNewItemFragment extends Fragment implements Constants {
                     Integer max = Integer.parseInt(tmax.getText().toString());
                     SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
                     String date = format.format(new Date());
+                    translateStylesToArray();
                     HashSet<Style> styles = new HashSet<>();
                     for (int i = 0; i < styleLayout.getChildCount(); ++i) {
-                        styles.add(Style.getStyle(((CheckBox)styleLayout.getChildAt(i)).getText().toString()));
+                        if (styleArr[i])
+                            styles.add(Style.getStyle(((CheckBox) styleLayout.getChildAt(i)).getText().toString()));
                     }
                     Apparel apparel = new Apparel(path, name.getText().toString(), color.getText().toString(),
                             Category.getByType(categories.getSelectedItem().toString()), styles, getTags(tags.getText().toString()),
                             min, max, date, date);
-                    WardrobeManager.getInstance(context).addApparel(apparel);
+                    WardrobeManager.getInstance().addApparel(apparel);
+                    reset();
                 } catch (IOException e) {
                     System.err.println(e.getMessage());
                 }
             }
         });
         return rootView;
+    }
+
+    private void reset() {
+        thumbnail.setVisibility(View.GONE);
+        categories.setSelection(0);
+        curPhoto = null;
+        resetEditTexts(tmin, tmax, name, color, tags);
+        for (int i = 0; i < styleLayout.getChildCount(); ++i) {
+            ((CheckBox) styleLayout.getChildAt(i)).setChecked(false);
+        }
+    }
+
+    private void resetEditTexts(EditText... editTexts) {
+        for (EditText et : editTexts) {
+            et.setText("");
+        }
     }
 
     private List<String> getTags(String s) {
@@ -133,6 +175,7 @@ public class AddNewItemFragment extends Fragment implements Constants {
                 if (resultCode == Activity.RESULT_OK) {
                     Bundle extras = data.getExtras();
                     curPhoto = (Bitmap) extras.get("data");
+                    thumbnail.setVisibility(View.VISIBLE);
                     thumbnail.setImageBitmap(curPhoto);
                 }
                 break;
@@ -150,6 +193,19 @@ public class AddNewItemFragment extends Fragment implements Constants {
     private String randomName() {
         String uuid = UUID.randomUUID().toString().substring(0, 7);
         return uuid;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        translateStylesToArray();
+        outState.putBooleanArray(STATE_STYLES_CHECKED, styleArr);
+    }
+
+    private void translateStylesToArray() {
+        for (int i = 0; i < styleLayout.getChildCount(); ++i) {
+            styleArr[i] = ((CheckBox) styleLayout.getChildAt(i)).isChecked();
+        }
     }
 
     private File createImageFile() throws IOException {

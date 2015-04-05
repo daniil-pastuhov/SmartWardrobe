@@ -1,5 +1,6 @@
 package by.genlife.smartwardrobe.constants;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.StringTokenizer;
 /**
  * Created by NotePad.by on 14.03.2015.
  */
-public enum Style {
+public enum Style implements Serializable {
     WORK("Рабочий"),
     DAILY("Повседневный"),
     HOME("Домашний"),
@@ -61,5 +62,9 @@ public enum Style {
             if (style.description.equals(description))
                 return style;
         return null;
+    }
+
+    public static int size() {
+        return values().length;
     }
 }

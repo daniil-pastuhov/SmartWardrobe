@@ -3,17 +3,19 @@ package by.genlife.smartwardrobe.constants;
 /**
  * Created by NotePad.by on 14.03.2015.
  */
+
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum Category {
+public enum Category implements Serializable {
     HEADDRESS("Головные уборы"),
     SHOES("Обувь"),
-    DRESS("Платья"),
-    TROUSERS("Брюки"),
+    TROUSERS("Штаны"),
     SHIRT("Рубашки"),
     TSHIRTS("Футболки"),
-    SWEATER("Свитера"),
+    SWEATER("Свитера/байки"),
+    JACKET("Верхняя одежда"),
     ACCESSORIES("Аксессуары"),
     OTHER("Другое");
 

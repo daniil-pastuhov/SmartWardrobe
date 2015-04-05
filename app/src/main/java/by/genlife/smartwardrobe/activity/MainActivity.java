@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.constants.Constants;
 import by.genlife.smartwardrobe.constants.Tab;
-import by.genlife.smartwardrobe.data.WardrobeManager;
 import by.genlife.smartwardrobe.fragment.AddNewItemFragment;
 import by.genlife.smartwardrobe.fragment.AutoSearchFragment;
 import by.genlife.smartwardrobe.fragment.CatalogFragment;
@@ -24,14 +23,8 @@ import by.genlife.smartwardrobe.service.WeatherService;
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks, Constants {
 
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private int curFragment = 0;
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
     private CharSequence mTitle;
     private Fragment prevFragment;
 
@@ -39,7 +32,6 @@ public class MainActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        WardrobeManager.getInstance(this);
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -79,6 +71,10 @@ public class MainActivity extends ActionBarActivity
                 break;
             case 4:
                 mTitle = getString(R.string.main_menu_pack_to_trip);
+                break;
+            case 5:
+                newFragment = new AddNewItemFragment();
+                tag = AddNewItemFragment.TAG;
                 break;
         }
         fragmentManager.beginTransaction()

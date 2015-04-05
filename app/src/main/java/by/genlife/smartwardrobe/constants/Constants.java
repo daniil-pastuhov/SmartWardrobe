@@ -15,6 +15,15 @@ public interface Constants {
 
     String EXTRA = PACK + "extra.";
     String EXTRA_WEATHER = EXTRA + "weather";
+    String EXTRA_APPAREL = EXTRA + "apparel";
+
+    String STATE = "state.";
+    String STATE_STYLES_CHECKED = STATE + "styles.checked";
+    String STATE_SPINNER_CATALOG = STATE + "spinner.catalog";
 
     int PHOTO_REQUEST_CODE = 54987;
+    int CLEAN_LEVEL = 10;
+    int COLD = -10;
+    int WARM = 10;
+    int HOT = 20;
 }

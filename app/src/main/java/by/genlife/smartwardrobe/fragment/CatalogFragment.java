@@ -2,7 +2,9 @@ package by.genlife.smartwardrobe.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -14,33 +16,34 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.activity.MainActivity;
 import by.genlife.smartwardrobe.adapter.ListViewAdapter;
 import by.genlife.smartwardrobe.constants.Category;
+import by.genlife.smartwardrobe.constants.Constants;
+import by.genlife.smartwardrobe.constants.Style;
 import by.genlife.smartwardrobe.data.Apparel;
+import by.genlife.smartwardrobe.data.Parameters;
 import by.genlife.smartwardrobe.data.WardrobeManager;
 
 /**
  * Created by NotePad.by on 14.03.2015.
  */
-public class CatalogFragment extends Fragment {
+public class CatalogFragment extends Fragment implements Constants {
     public static final String TAG = CatalogFragment.class.getSimpleName();
 
-    final MainMenuState mainMenuState = new MainMenuState();
-    final CategoryMenuState categoryMenuState = new CategoryMenuState();
-    final ArrayList<Apparel> apparels = new ArrayList<>(5);
-    final String mainMenuStateStr = "MainMenuState";
     final String categoryStateStr = "categoryState";
     Button backButton;
+    Spinner season, style, color, clean;
     ListView lst;
-    State state;
     ArrayAdapter<String> adapterMain;
     private static CatalogFragment instance;
+    WardrobeManager manager;
     Context context;
+    SharedPreferences prefs;
+    String curCategory;
 
     public static CatalogFragment getInstance() {
         if (instance == null) {
@@ -57,32 +60,29 @@ public class CatalogFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.catalog, container, false);
         this.context = inflater.getContext();
-        WardrobeManager.init(context);
-        //TODO delete this section
-        Spinner sp1, sp2, sp3, sp4;
-        sp1 = (Spinner) rootView.findViewById(R.id.spinner2);
-        sp2 = (Spinner) rootView.findViewById(R.id.spinner3);
-        sp3 = (Spinner) rootView.findViewById(R.id.spinner4);
-        sp4 = (Spinner) rootView.findViewById(R.id.spinner5);
-        ArrayAdapter<CharSequence> ad1 = ArrayAdapter.createFromResource(context, R.array.n1, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> ad2 = ArrayAdapter.createFromResource(context, R.array.n2, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> ad3 = ArrayAdapter.createFromResource(context, R.array.n3, android.R.layout.simple_spinner_item);
-        ArrayAdapter<CharSequence> ad4 = ArrayAdapter.createFromResource(context, R.array.n4, android.R.layout.simple_spinner_item);
-        sp1.setAdapter(ad1);
-        sp2.setAdapter(ad2);
-        sp3.setAdapter(ad3);
-        sp4.setAdapter(ad4);
-        //
-        if (savedInstanceState != null && !savedInstanceState.getBoolean(mainMenuStateStr, true)) {
-            state = categoryMenuState;
-            state.setCategory(savedInstanceState.getString(categoryStateStr));
-        } else {
-            state = mainMenuState;
-        }
+        prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        manager = WardrobeManager.getInstance();
+        createSpinners(rootView, savedInstanceState);
+        backButton = (Button) rootView.findViewById(R.id.btnBack);
         lst = (ListView) rootView.findViewById(R.id.list_of_categories);
         adapterMain = new ArrayAdapter<>(context, R.layout.list_item_category, Category.getCategories());
-        backButton = (Button) rootView.findViewById(R.id.btnBack);
-        backButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.back));
+        if (prefs.contains(categoryStateStr)) {
+            curCategory = prefs.getString(categoryStateStr, Category.OTHER.getType());
+            showApparelsByCategory(curCategory);
+        } else {
+            lst.setAdapter(adapterMain);
+        }
+        lst.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (curCategory == null) {
+                    curCategory = adapterView.getAdapter().getItem(i).toString();
+                    showApparelsByCategory(curCategory);
+                } else {
+                    //TODO open details new Intent
+                }
+            }
+        });
         backButton.setFocusable(true);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,21 +94,94 @@ public class CatalogFragment extends Fragment {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (keyCode == KeyEvent.KEYCODE_BACK) {
-                    if (state != mainMenuState) onBackClick(null);
+                    onBackClick(null);
                 }
                 return false;
             }
         });
-        System.err.println("created");
-        state.init();
-        lst.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                state.onItemClicked(adapterView, i, l);
-            }
-        });
-
         return rootView;
+    }
+
+    private void showApparelsByCategory(String curCategory) {
+        Parameters.Builder builder = new Parameters.Builder();
+        builder.add(Category.getByType(curCategory));
+        showBackButton(true);
+        addFilter(builder);
+        List<Apparel> tempList = manager.getByParams(builder.build());
+        ListViewAdapter adapter = new ListViewAdapter(context, R.layout.listview_item);
+        adapter.addAll(tempList);
+        lst.setAdapter(adapter);
+    }
+
+    private void addFilter(Parameters.Builder builder) {
+        boolean weather = false;
+        int temperature = 15;
+        switch (season.getSelectedItemPosition()) {
+            case 1:
+                temperature = COLD;
+                weather = true;
+                break;
+            case 2:
+                temperature = WARM;
+                weather = true;
+                break;
+            case 3:
+                temperature = HOT;
+                weather = true;
+                break;
+            default:
+                break;
+        }
+        if (weather) {
+            builder.setTemperature(temperature);
+        }
+        if (style.getSelectedItemPosition() != 0)
+            builder.add(Style.getStyle(style.getSelectedItem().toString()));
+        if (color.getSelectedItemPosition() != 0)
+            builder.setColor(color.getSelectedItem().toString());
+        if (clean.getSelectedItemPosition() != 0) {
+            switch (clean.getSelectedItemPosition()) {
+                case 1: //new
+                    builder.setNew(true);
+                    break;
+                case 2: //clean
+                    builder.setClean(true);
+                    break;
+            }
+        }
+
+    }
+
+    private void createSpinners(View rootView, Bundle savedInstanceState) {
+        season = (Spinner) rootView.findViewById(R.id.spinner2);
+        style = (Spinner) rootView.findViewById(R.id.spinner3);
+        color = (Spinner) rootView.findViewById(R.id.spinner4);
+        clean = (Spinner) rootView.findViewById(R.id.spinner5);
+        ArrayAdapter<CharSequence> ad1 = ArrayAdapter.createFromResource(context, R.array.season, android.R.layout.simple_spinner_item);
+        List<String> styles = Style.getStylesStr();
+        List<String> colors = manager.getAllColors();
+        styles.add(0, "~");
+        colors.add(0, "~");
+        ArrayAdapter<String> ad2 = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, styles);
+        ArrayAdapter<String> ad3 = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, colors);
+        ArrayAdapter<CharSequence> ad4 = ArrayAdapter.createFromResource(context, R.array.state, android.R.layout.simple_spinner_item);
+        season.setAdapter(ad1);
+        style.setAdapter(ad2);
+        color.setAdapter(ad3);
+        clean.setAdapter(ad4);
+        if (savedInstanceState != null) {
+            int[] pos = savedInstanceState.getIntArray(STATE_SPINNER_CATALOG);
+            season.setSelection(pos[0]);
+            style.setSelection(pos[0]);
+            color.setSelection(pos[0]);
+            clean.setSelection(pos[0]);
+        }
+    }
+
+    public void onBackClick(View v) {
+        curCategory = null;
+        showBackButton(false);
+        lst.setAdapter(adapterMain);
     }
 
     private void showBackButton(boolean visibility) {
@@ -116,89 +189,18 @@ public class CatalogFragment extends Fragment {
         else backButton.setVisibility(View.GONE);
     }
 
-    public void onBackClick(View v) {
-        state.prevState();
-    }
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(mainMenuStateStr, state instanceof MainMenuState);
-        outState.putString(categoryStateStr, state.getCategory());
-    }
-
-    abstract private class State {
-        protected String category;
-
-        abstract public void onItemClicked(AdapterView adapterView, int i, long l);
-
-        abstract public void nextState();
-
-        abstract public void prevState();
-
-        abstract public void init();
-
-        public String getCategory() {
-            return category;
-        }
-
-        public void setCategory(String category) {
-            this.category = category;
-        }
-    }
-
-    private class MainMenuState extends State {
-        @Override
-        public void onItemClicked(AdapterView adapterView, int i, long l) {
-            nextState();
-            state.setCategory(adapterView.getAdapter().getItem(i).toString());
-            state.init();
-        }
-
-        @Override
-        public void nextState() {
-            state = categoryMenuState;
-        }
-
-        @Override
-        public void prevState() {
-            //do nothing
-        }
-
-        @Override
-        public void init() {
-            showBackButton(false);
-            lst.setAdapter(adapterMain);
-        }
-    }
-
-    private class CategoryMenuState extends State {
-        @Override
-        public void onItemClicked(AdapterView adapterView, int i, long l) {
-            getFragmentManager().beginTransaction().replace(R.id.container, DetailFragment.getInstance()).commit();
-            category = adapterView.getAdapter().getItem(i).toString();
-            nextState();
-        }
-
-        @Override
-        public void nextState() {
-            //go nowhere
-        }
-
-        @Override
-        public void prevState() {
-            state = mainMenuState;
-            state.init();
-        }
-
-        @Override
-        public void init() {
-            showBackButton(true);
-            List<Apparel> tempList = WardrobeManager.getInstance().getByCategory(category);
-            ListViewAdapter adapter = new ListViewAdapter(context, R.layout.listview_item);
-            adapter.addAll(tempList);
-            lst.setAdapter(adapter);
-        }
+        if (curCategory != null)
+            prefs.edit().putString(categoryStateStr, curCategory).commit();
+        else prefs.edit().remove(categoryStateStr).commit();
+        int pos[] = new int[4];
+        pos[0] = season.getSelectedItemPosition();
+        pos[0] = style.getSelectedItemPosition();
+        pos[0] = color.getSelectedItemPosition();
+        pos[0] = clean.getSelectedItemPosition();
+        outState.putIntArray(STATE_SPINNER_CATALOG, pos);
     }
 
     @Override

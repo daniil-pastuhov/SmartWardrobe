@@ -2,6 +2,7 @@ package by.genlife.smartwardrobe.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -56,8 +58,8 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
         if (apparel != null) {
             holder.name.setText(apparel.getName());
             holder.date.setText(apparel.getDate_of_last_wearing());
-            if (apparel.getCover() != null) {
-                holder.cover.setImageBitmap(apparel.getCover());
+            if (new File(apparel.getImagePath()).exists()) {
+                holder.cover.setImageBitmap(BitmapFactory.decodeFile(apparel.getImagePath()));
             } else {
                 holder.cover.setImageResource(R.drawable.fallback_cover);
             }

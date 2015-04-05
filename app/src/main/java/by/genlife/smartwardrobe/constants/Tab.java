@@ -2,12 +2,14 @@ package by.genlife.smartwardrobe.constants;
 
 import java.util.ArrayList;
 import java.util.List;
+
 public enum Tab {
     AUTO_SEARCH("Подобрать одежду"),
     CATALOG("Каталог"),
     SEARCHING("Поиск"),
     WASHING("Корзина для стирки"),
-    TRAVEL("В путешествие");
+    TRAVEL("В путешествие"),
+    ADD("Добавить новое");
 
     private String description;
 
@@ -35,13 +37,14 @@ public enum Tab {
         Tab res = null;
         try {
             res = valueOf(name);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return res;
     }
 
     public static int getIndexOf(String name) {
         if (name == null || name.isEmpty()) return -1;
-        Tab [] list = values();
+        Tab[] list = values();
         Tab type = valueOf(name);
         for (int i = 0; i < list.length; ++i) {
             if (list[i].equals(type)) {

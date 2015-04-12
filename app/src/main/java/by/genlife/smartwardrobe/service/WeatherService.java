@@ -10,6 +10,7 @@ public class WeatherService extends BaseBackgroundService {
     private static String weather;
     private boolean processing = false;
     private static OnTaskCompleteListener<String> listener;
+
     public WeatherService() {
 
     }
@@ -63,5 +64,9 @@ public class WeatherService extends BaseBackgroundService {
 
     public static void setListener(OnTaskCompleteListener<String> listener) {
         WeatherService.listener = listener;
+    }
+
+    public static String getWeather() {
+        return weather;
     }
 }

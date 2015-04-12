@@ -51,7 +51,7 @@ public enum Style implements Serializable {
     public static String parseToString(HashSet<Style> styles) {
         StringBuilder sb = new StringBuilder();
         for (Style style : styles) {
-            sb.append(style.name());
+            sb.append(style.description);
             sb.append(Constants.styleSeparator);
         }
         return sb.toString();

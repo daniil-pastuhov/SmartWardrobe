@@ -78,8 +78,10 @@ public class CatalogFragment extends Fragment implements Constants {
                 if (curCategory == null) {
                     curCategory = adapterView.getAdapter().getItem(i).toString();
                     showApparelsByCategory(curCategory);
+                    prefs.edit().putString(categoryStateStr, curCategory).commit();
                 } else {
                     curCategory = null;
+                    prefs.edit().remove(categoryStateStr).commit();
                 }
             }
         });
@@ -201,6 +203,7 @@ public class CatalogFragment extends Fragment implements Constants {
     public void onBackClick(View v) {
         curCategory = null;
         showBackButton(false);
+        prefs.edit().remove(categoryStateStr).commit();
         lst.setAdapter(adapterMain);
     }
 

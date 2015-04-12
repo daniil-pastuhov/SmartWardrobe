@@ -11,6 +11,7 @@ import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -74,6 +75,15 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
             }
         }
         convertView.setTag(holder);
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                v.showContextMenu();
+                //TODO
+                Toast.makeText(context, "Delete this element! //TODO", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
         return convertView;
     }
 
@@ -99,15 +109,6 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
         ImageView miniLabel;
         ProgressBar wearProgress;
         boolean needInvalidate = false;
-    }
-
-    private void insertData(ArrayList<Apparel> apparels) {
-        synchronized (lock) {
-            if (mOriginalValues != null) {
-                mOriginalValues.addAll(apparels);
-            }
-            mObjects.addAll(apparels);
-        }
     }
 
     @Override

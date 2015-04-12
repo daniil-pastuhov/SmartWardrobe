@@ -20,6 +20,7 @@ public interface Constants {
     String STATE = "state.";
     String STATE_STYLES_CHECKED = STATE + "styles.checked";
     String STATE_SPINNER_CATALOG = STATE + "spinner.catalog";
+    String STATE_WEATHER = STATE + "weather";
 
     int PHOTO_REQUEST_CODE = 54987;
     int CLEAN_LEVEL = 10;

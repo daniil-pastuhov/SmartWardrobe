@@ -13,9 +13,11 @@ import android.view.MenuItem;
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.constants.Constants;
 import by.genlife.smartwardrobe.constants.Tab;
+import by.genlife.smartwardrobe.data.Apparel;
 import by.genlife.smartwardrobe.fragment.AddNewItemFragment;
 import by.genlife.smartwardrobe.fragment.AutoSearchFragment;
 import by.genlife.smartwardrobe.fragment.CatalogFragment;
+import by.genlife.smartwardrobe.fragment.FindByTag;
 import by.genlife.smartwardrobe.fragment.NavigationDrawerFragment;
 import by.genlife.smartwardrobe.service.WeatherService;
 
@@ -27,6 +29,7 @@ public class MainActivity extends ActionBarActivity
     private int curFragment = 0;
     private CharSequence mTitle;
     private Fragment prevFragment;
+    Apparel selectedItem = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +67,8 @@ public class MainActivity extends ActionBarActivity
                 tag = CatalogFragment.TAG;
                 break;
             case 2:
-                mTitle = getString(R.string.main_menu_find_by_teg);
+                newFragment = FindByTag.getInstance();
+                tag = FindByTag.TAG;
                 break;
             case 3:
                 mTitle = getString(R.string.main_menu_find_to_wash);
@@ -82,7 +86,7 @@ public class MainActivity extends ActionBarActivity
     }
 
     public void onSectionAttached() {
-       mTitle = Tab.getType(curFragment).getDescription();
+        mTitle = Tab.getType(curFragment).getDescription();
     }
 
     public void restoreActionBar() {

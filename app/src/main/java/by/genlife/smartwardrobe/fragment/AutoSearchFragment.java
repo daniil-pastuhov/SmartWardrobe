@@ -39,6 +39,7 @@ import by.genlife.smartwardrobe.data.Apparel;
 import by.genlife.smartwardrobe.data.Parameters;
 import by.genlife.smartwardrobe.data.WardrobeManager;
 import by.genlife.smartwardrobe.listener.OnTaskCompleteListener;
+import by.genlife.smartwardrobe.service.WeatherService;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -86,8 +87,18 @@ public class AutoSearchFragment extends Fragment implements Constants{
         context = inflater.getContext();
         View rootView = inflater.inflate(R.layout.today_suit, container, false);
         createViews(rootView);
-        if (savedInstanceState == null)
+        if (savedInstanceState == null) {
             createAdapterViewFlippers(rootView);
+        } else {
+            if (savedInstanceState.containsKey(STATE_WEATHER)) {
+                tvWeather.setText(savedInstanceState.getString(STATE_WEATHER));
+                tvWeather.setVisibility(View.VISIBLE);
+            }
+        }
+        if (WeatherService.getWeather() != null) {
+            tvWeather.setText(WeatherService.getWeather());
+            tvWeather.setVisibility(View.VISIBLE);
+        }
         manager = WardrobeManager.getInstance(context, new OnTaskCompleteListener<Void>() {
             @Override
             public void success(Void result) {
@@ -175,13 +186,15 @@ public class AutoSearchFragment extends Fragment implements Constants{
     }
 
     private int getTemperature(String s) {
-        Pattern p = Pattern.compile("\\d+");
+        Pattern p = Pattern.compile("\\-\\d+°");
         Matcher m = p.matcher(s);
         int avr = 15;
         if (m.find()) {
-            avr = Integer.parseInt(m.group());
+            String temp = m.group();
+            avr = Integer.parseInt(temp.substring(0, temp.length() - 1));
             if (m.find()) {
-                avr += Integer.parseInt(m.group());
+                temp = m.group();
+                avr += Integer.parseInt(temp.substring(0, temp.length() - 1));
                 avr /= 2;
             }
         }
@@ -211,6 +224,13 @@ public class AutoSearchFragment extends Fragment implements Constants{
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         ((MainActivity) activity).onSectionAttached();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (tvWeather.getVisibility() == View.VISIBLE)
+            outState.putString(STATE_WEATHER, tvWeather.getText().toString());
     }
 
     @Override

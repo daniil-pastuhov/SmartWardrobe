@@ -20,6 +20,12 @@
     <string name="clean_asf">Чистое</string>
     <string name="for_weather_asf">По погоде</string>
 
+    <!-- Catalog -->
+    <string name="delete">Удалить</string>
+
+    <!-- Find by tags -->
+    <string name="no_results">Не найдено</string>
+
     <!-- -->
     <string name="pref_location_key">location</string>
     <string name="pref_metric_key">metric</string>
@@ -39,7 +45,7 @@
     <string name="returnTo">Вернуть в шкаф</string>
     <string name="add_item">Добавить вещь</string>
     <string name="delete_item">Удалить вещь</string>
-    <string name="find_by_teg_label">Введите ключевые слова через запятую</string>
+    <string name="find_by_teg_label">Введите ключевые слова через пробел</string>
     <string name="photo_add">Добавить фото</string>
     <string name="image_view_adding">Picture of the apparel.</string>
     <string name="textView_name_add">Name:</string>

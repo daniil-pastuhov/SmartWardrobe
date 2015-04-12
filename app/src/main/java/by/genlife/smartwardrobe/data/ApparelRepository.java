@@ -19,7 +19,7 @@ public interface ApparelRepository {
 
     void deleteApparel(Apparel app);
 
-    List<String> seachByTags(String... tags);
+    List<Apparel> searchByTags(List<String> tags);
 
     List<String> getAllColors();
 }

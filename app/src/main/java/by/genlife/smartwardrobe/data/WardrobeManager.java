@@ -114,8 +114,17 @@ public class WardrobeManager implements ApparelRepository, Constants {
     }
 
     @Override
-    public List<String> seachByTags(String... tags) {
-        return null;
+    public List<Apparel> searchByTags(List<String> tags) {
+        List<Apparel> res = new ArrayList<>();
+        for (Apparel apparel : clothes) {
+            for (String tag : tags) {
+                if (apparel.getTags().contains(tag)) {
+                    res.add(apparel);
+                    break;
+                }
+            }
+        }
+        return res;
     }
 
     public List<String> getAllColors() {

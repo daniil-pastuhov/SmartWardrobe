@@ -17,11 +17,9 @@ import by.genlife.smartwardrobe.data.Apparel;
 public final class PageViewAdapter extends ArrayAdapter<Apparel> {
 
     private LayoutInflater inflater;
-    private Context context;
 
     public PageViewAdapter(Context context, int resource) {
         super(context, resource);
-        this.context = context;
         this.inflater = LayoutInflater.from(context);
     }
 

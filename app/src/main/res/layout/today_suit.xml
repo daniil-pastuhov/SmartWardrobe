@@ -47,19 +47,14 @@
                 <GridLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:columnCount="3"
+                    android:columnCount="2"
                     android:rowCount="2">
 
                     <CheckBox
                         android:id="@+id/cb_style"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/style_asf"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:text="@string/style_asf"/>
 
                     <Spinner
                         android:id="@+id/style_spinner"
@@ -69,13 +64,8 @@
                     <CheckBox
                         android:id="@+id/cb_color"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/color_asf"
-                        android:textAppearance="?android:attr/textAppearanceMedium" />
+                        android:text="@string/color_asf" />
 
                     <Spinner
                         android:id="@+id/color_spinner"
@@ -83,18 +73,13 @@
                         android:layout_height="wrap_content" />
                 </GridLayout>
 
-                <GridLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:columnCount="2"
-                    android:rowCount="3">
+                    android:orientation="vertical">
 
                     <CheckBox
                         android:id="@+id/cb_new"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/new_asf" />
@@ -102,27 +87,17 @@
                     <CheckBox
                         android:id="@+id/cb_clean"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/clean_asf" />
+                        android:text="@string/clean_asf"/>
 
                     <CheckBox
                         android:id="@+id/cb_for_weather"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/tv_for_weather"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
                         android:text="@string/for_weather_asf"
                         android:visibility="gone" />
 
-                </GridLayout>
+                </LinearLayout>
             </LinearLayout>
 
             <Button

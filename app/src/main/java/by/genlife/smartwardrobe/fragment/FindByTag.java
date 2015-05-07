@@ -49,7 +49,12 @@ public class FindByTag extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.find_by_teg_layout, container, false);
         this.context = inflater.getContext();
-        results = new ListViewAdapter(context, R.layout.listview_item);
+        results = new ListViewAdapter(context, new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        });
         ((ListView) rootView.findViewById(R.id.lvFounded)).setAdapter(results);
         searchStr = (EditText) rootView.findViewById(R.id.tags);
         noResult = rootView.findViewById(R.id.no_result);

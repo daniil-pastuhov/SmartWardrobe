@@ -17,14 +17,7 @@ import by.genlife.smartwardrobe.activity.MainActivity;
 public class DetailFragment extends Fragment {
     public static final String TAG = DetailFragment.class.getSimpleName();
 
-    private static DetailFragment instance;
     Context context;
-    public static DetailFragment getInstance() {
-        if (instance == null) {
-            instance = new DetailFragment();
-        }
-        return instance;
-    }
 
     public DetailFragment() {
     }

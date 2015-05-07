@@ -52,11 +52,9 @@ public class AutoSearchFragment extends Fragment implements Constants{
         public void onReceive(Context context, Intent intent) {
             tvWeather.setVisibility(View.VISIBLE);
             tvWeather.setText(intent.getStringExtra(EXTRA_WEATHER));
-            tvWeatherParam.setVisibility(View.VISIBLE);
             cbForWeater.setVisibility(View.VISIBLE);
         }
     };
-    private static AutoSearchFragment instance;
     private WardrobeManager manager;
 
     AdapterViewFlipper suitToDay[];
@@ -69,15 +67,8 @@ public class AutoSearchFragment extends Fragment implements Constants{
     View layoutParams;
     Button showParams, find;
     ProgressBar progressBar;
-    View tvWeatherParam;
     View content;
-
-    public static AutoSearchFragment getInstance() {
-        if (instance == null) {
-            instance = new AutoSearchFragment();
-        }
-        return instance;
-    }
+    boolean isApparelLoaded = false;
 
     public AutoSearchFragment() {
     }
@@ -87,17 +78,19 @@ public class AutoSearchFragment extends Fragment implements Constants{
         context = inflater.getContext();
         View rootView = inflater.inflate(R.layout.today_suit, container, false);
         createViews(rootView);
+        createAdapterViewFlippers(rootView);
         if (savedInstanceState == null) {
-            createAdapterViewFlippers(rootView);
         } else {
             if (savedInstanceState.containsKey(STATE_WEATHER)) {
                 tvWeather.setText(savedInstanceState.getString(STATE_WEATHER));
                 tvWeather.setVisibility(View.VISIBLE);
+                cbForWeater.setVisibility(View.VISIBLE);
             }
         }
         if (WeatherService.getWeather() != null) {
             tvWeather.setText(WeatherService.getWeather());
             tvWeather.setVisibility(View.VISIBLE);
+            cbForWeater.setVisibility(View.VISIBLE);
         }
         manager = WardrobeManager.getInstance(context, new OnTaskCompleteListener<Void>() {
             @Override
@@ -107,6 +100,7 @@ public class AutoSearchFragment extends Fragment implements Constants{
                     content.setVisibility(View.VISIBLE);
                     colors.setAdapter(createSpinnerAdapter(manager.getAllColors()));
                     find.setVisibility(View.VISIBLE);
+                    isApparelLoaded = true;
                 } catch (Exception e) {
                     //TODO
                 }
@@ -117,6 +111,17 @@ public class AutoSearchFragment extends Fragment implements Constants{
                 //TODO
             }
         });
+        isApparelLoaded = manager.getAll() != null;
+        if (isApparelLoaded) {
+            progressBar.setVisibility(View.GONE);
+            content.setVisibility(View.VISIBLE);
+            colors.setAdapter(createSpinnerAdapter(manager.getAllColors()));
+            find.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+            content.setVisibility(View.GONE);
+            find.setVisibility(View.GONE);
+        }
         context.registerReceiver(weatherReceiver, new IntentFilter(ACTION_WEATHER));
         return rootView;
     }
@@ -149,7 +154,6 @@ public class AutoSearchFragment extends Fragment implements Constants{
         cbClean = (CheckBox) rootView.findViewById(R.id.cb_clean);
         cbForWeater = (CheckBox) rootView.findViewById(R.id.cb_for_weather);
         layoutParams = rootView.findViewById(R.id.search_params);
-        tvWeatherParam = rootView.findViewById(R.id.tv_for_weather);
         progressBar = (ProgressBar) rootView.findViewById(R.id.progressBar);
         content = rootView.findViewById(R.id.content);
         showParams = (Button) rootView.findViewById(R.id.show_params);

@@ -13,12 +13,13 @@ import android.view.MenuItem;
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.constants.Constants;
 import by.genlife.smartwardrobe.constants.Tab;
-import by.genlife.smartwardrobe.data.Apparel;
 import by.genlife.smartwardrobe.fragment.AddNewItemFragment;
 import by.genlife.smartwardrobe.fragment.AutoSearchFragment;
 import by.genlife.smartwardrobe.fragment.CatalogFragment;
-import by.genlife.smartwardrobe.fragment.FindByTag;
+import by.genlife.smartwardrobe.fragment.FindByTagFragment;
 import by.genlife.smartwardrobe.fragment.NavigationDrawerFragment;
+import by.genlife.smartwardrobe.fragment.ToWashFragment;
+import by.genlife.smartwardrobe.fragment.TravelFragment;
 import by.genlife.smartwardrobe.service.WeatherService;
 
 
@@ -28,8 +29,6 @@ public class MainActivity extends ActionBarActivity
     private NavigationDrawerFragment mNavigationDrawerFragment;
     private int curFragment = 0;
     private CharSequence mTitle;
-    private Fragment prevFragment;
-    Apparel selectedItem = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,26 +58,24 @@ public class MainActivity extends ActionBarActivity
         String tag = null;
         switch (position) {
             case 0:
-                newFragment = AutoSearchFragment.getInstance();
+                newFragment = new AutoSearchFragment();
                 tag = AutoSearchFragment.TAG;
                 break;
             case 1:
-                newFragment = CatalogFragment.getInstance();
+                newFragment = new CatalogFragment();
                 tag = CatalogFragment.TAG;
                 break;
             case 2:
-                newFragment = FindByTag.getInstance();
-                tag = FindByTag.TAG;
+                newFragment = new FindByTagFragment();
+                tag = FindByTagFragment.TAG;
                 break;
             case 3:
-                mTitle = getString(R.string.main_menu_find_to_wash);
+                newFragment = new ToWashFragment();
+                tag = ToWashFragment.TAG;
                 break;
             case 4:
-                mTitle = getString(R.string.main_menu_pack_to_trip);
-                break;
-            case 5:
-                newFragment = new AddNewItemFragment();
-                tag = AddNewItemFragment.TAG;
+                newFragment = new TravelFragment();
+                tag = TravelFragment.TAG;
                 break;
         }
         fragmentManager.beginTransaction()

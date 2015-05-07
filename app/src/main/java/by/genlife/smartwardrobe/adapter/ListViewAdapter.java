@@ -11,7 +11,6 @@ import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,11 +31,13 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
     private Filter filter;
     private Object lock = new Object();
     private Context context;
+    private View.OnLongClickListener listener;
 
-    public ListViewAdapter(Context context, int resource) {
-        super(context, resource);
+    public ListViewAdapter(Context context, View.OnLongClickListener listener) {
+        super(context, R.layout.listview_item);
         this.context = context;
         this.inflater = LayoutInflater.from(context);
+        this.listener = listener;
         mObjects = new ArrayList<Apparel>();
     }
 
@@ -66,24 +67,23 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
             }
             int progress = apparel.getWearProgress();
             holder.wearProgress.setProgress(progress);
-            holder.styles.setText(Style.parseToString(apparel.getStyles()));
+            holder.styles.setText(Style.toReadableString(apparel.getStyles()));
+            holder.path.setText(apparel.getImagePath());
             holder.temperature.setText(apparel.getMinT() + context.getString(R.string.deg) + "—" + apparel.getMaxT() + context.getString(R.string.deg));
-            if (progress > 90) holder.miniLabel.setImageResource(R.drawable.fu);
+            if (progress > 90) {
+                holder.miniLabel.setVisibility(View.VISIBLE);
+                holder.miniLabel.setImageResource(R.drawable.fu);
+            }
             else {
-                if (apparel.getDate_of_buying().equals(apparel.getDate_of_last_wearing()))
+                if (apparel.isNew()) {
+                    holder.miniLabel.setVisibility(View.VISIBLE);
                     holder.miniLabel.setImageResource(R.drawable.ne);
+                }
+                else holder.miniLabel.setVisibility(View.GONE);
             }
         }
         convertView.setTag(holder);
-        convertView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                v.showContextMenu();
-                //TODO
-                Toast.makeText(context, "Delete this element! //TODO", Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
+        convertView.setOnLongClickListener(listener);
         return convertView;
     }
 
@@ -97,6 +97,7 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
         holder.date = (TextView) convertView.findViewById(R.id.tvAppareldates);
         holder.wearProgress = (ProgressBar) convertView.findViewById(R.id.progressBar);
         holder.miniLabel = (ImageView) convertView.findViewById(R.id.mini_label);
+        holder.path = (TextView) convertView.findViewById(R.id.path);
         return holder;
     }
 
@@ -108,6 +109,7 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
         ImageView cover;
         ImageView miniLabel;
         ProgressBar wearProgress;
+        TextView path;
         boolean needInvalidate = false;
     }
 
@@ -148,7 +150,8 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
             if (mOriginalValues != null) {
                 mOriginalValues.addAll(collection);
             }
-            mObjects.addAll(collection);
+            if (collection != null)
+                mObjects.addAll(collection);
         }
     }
 

@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -37,6 +38,7 @@ import by.genlife.smartwardrobe.constants.Constants;
 import by.genlife.smartwardrobe.constants.Style;
 import by.genlife.smartwardrobe.data.Apparel;
 import by.genlife.smartwardrobe.data.WardrobeManager;
+import by.genlife.smartwardrobe.listener.OnTaskCompleteListener;
 
 /**
  * Created by NotePad.by on 02.04.2015.
@@ -118,9 +120,10 @@ public class AddNewItemFragment extends Fragment implements Constants {
                     }
                     Apparel apparel = new Apparel(path, name.getText().toString(), color.getText().toString(),
                             Category.getByType(categories.getSelectedItem().toString()), styles, getTags(tags.getText().toString()),
-                            min, max, date, date);
-                    WardrobeManager.getInstance().addApparel(apparel);
+                            min, max, date, date, 0, Constants.homeRepository);
+                    WardrobeManager.getInstance(context, OnTaskCompleteListener.<Void>getEmptyListener()).addApparel(apparel);
                     reset();
+                    hideKeyboard();
                 } catch (IOException e) {
                     System.err.println(e.getMessage());
                 }
@@ -149,7 +152,7 @@ public class AddNewItemFragment extends Fragment implements Constants {
         ArrayList<String> res = new ArrayList<>();
         StringTokenizer st = new StringTokenizer(s);
         while (st.hasMoreTokens())
-            res.add(st.nextToken());
+            res.add(st.nextToken().toLowerCase());
         return res;
     }
 
@@ -220,4 +223,17 @@ public class AddNewItemFragment extends Fragment implements Constants {
         );
         return image;
     }
+
+    private void hideKeyboard() {
+        Activity activity = getActivity();
+        if (activity != null) {
+            View view = activity.getCurrentFocus();
+            if (view != null) {
+                view.clearFocus();
+                InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }
+    }
+
 }

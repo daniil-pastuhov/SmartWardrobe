@@ -9,6 +9,7 @@ public interface Constants {
     String styleSeparator = ";";
     String tagsSeparator = ";";
     String homeDirectory = "/.SmartWardrobeImage/";
+    String homeRepository = "home";
     String STATE_CUR_FRAGMENT = "current.fragment.state";
     String ACTION = PACK + "action.";
     String ACTION_WEATHER = ACTION + "weather";
@@ -27,4 +28,5 @@ public interface Constants {
     int COLD = -10;
     int WARM = 10;
     int HOT = 20;
+    int WEAR_COEFF = 20;
 }

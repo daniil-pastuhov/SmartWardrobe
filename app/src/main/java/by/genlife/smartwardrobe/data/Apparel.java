@@ -1,7 +1,5 @@
 package by.genlife.smartwardrobe.data;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -10,9 +8,10 @@ import java.util.List;
 import java.util.Set;
 
 import by.genlife.smartwardrobe.constants.Category;
+import by.genlife.smartwardrobe.constants.Constants;
 import by.genlife.smartwardrobe.constants.Style;
 
-public class Apparel implements Parcelable {
+public class Apparel implements Parcelable, Constants {
 
     public static final Parcelable.Creator<Apparel> CREATOR = new Creator<Apparel>() {
         @Override
@@ -37,8 +36,11 @@ public class Apparel implements Parcelable {
     private String date_of_last_wearing;
     private String date_of_buying;
     private int wearProgress = 0;
+    private String repository;
 
-    public Apparel(String imagePath, String name, String color, Category category, HashSet<Style> styles, List<String> tags, Integer minT, Integer maxT, String date_of_last_wearing, String date_of_buying) {
+    public Apparel(String imagePath, String name, String color, Category category, HashSet<Style> styles,
+                   List<String> tags, Integer minT, Integer maxT, String date_of_last_wearing,
+                   String date_of_buying, int wearProgress) {
         this.imagePath = imagePath;
         this.name = name;
         this.styles = styles;
@@ -50,6 +52,17 @@ public class Apparel implements Parcelable {
         this.maxT = maxT;
         this.date_of_last_wearing = date_of_last_wearing;
         this.date_of_buying = date_of_buying;
+        this.wearProgress = wearProgress;
+        repository = homeRepository;
+    }
+
+    public Apparel(String imagePath, String name, String color, Category category, HashSet<Style> styles,
+                   List<String> tags, Integer minT, Integer maxT, String date_of_last_wearing,
+                   String date_of_buying, int wearProgress, String location) {
+        this(imagePath, name, color, category, styles,
+                tags, minT, maxT, date_of_last_wearing,
+                date_of_buying, wearProgress);
+        repository = location;
     }
 
     private Apparel(Parcel parcel) {
@@ -63,6 +76,8 @@ public class Apparel implements Parcelable {
         maxT = parcel.readInt();
         date_of_last_wearing = parcel.readString();
         date_of_buying = parcel.readString();
+        wearProgress = parcel.readInt();
+        repository = parcel.readString();
     }
 
     @Override
@@ -77,18 +92,22 @@ public class Apparel implements Parcelable {
         parcel.writeInt(maxT);
         parcel.writeString(date_of_last_wearing);
         parcel.writeString(date_of_buying);
-    }
-
-    private Bitmap loadCover(String imagePath) {
-        return BitmapFactory.decodeFile(imagePath);
+        parcel.writeInt(wearProgress);
+        parcel.writeString(repository);
     }
 
     public int getWearProgress() {
         return wearProgress;
     }
 
-    public void setWearProgress(int wearProgress) {
-        this.wearProgress = wearProgress;
+    public void putOn() {
+        if (wearProgress + WEAR_COEFF <= 100) {
+            this.wearProgress += WEAR_COEFF;
+        }
+    }
+
+    public void setWearProgress(int progress) {
+        wearProgress = progress;
     }
 
     public String getImagePath() {
@@ -109,6 +128,14 @@ public class Apparel implements Parcelable {
 
     public String getColor() {
         return color;
+    }
+
+    public void setRepository(String repository) {
+        this.repository = repository;
+    }
+
+    public String getRepository() {
+        return repository;
     }
 
     public void setColor(String color) {

@@ -43,12 +43,28 @@ public enum Style implements Serializable {
         HashSet<Style> res = new HashSet<>(values().length);
         StringTokenizer st = new StringTokenizer(s, Constants.styleSeparator);
         while (st.hasMoreTokens()) {
-            res.add(Style.valueOf(st.nextToken()));
+            Style style;
+            String token = st.nextToken();
+            try {
+                style = Style.valueOf(token);
+            } catch (IllegalArgumentException e) {
+                style = Style.getStyle(token);
+            }
+            res.add(style);
         }
         return res;
     }
 
     public static String parseToString(HashSet<Style> styles) {
+        StringBuilder sb = new StringBuilder();
+        for (Style style : styles) {
+            sb.append(style.name());
+            sb.append(Constants.styleSeparator);
+        }
+        return sb.toString();
+    }
+
+    public static String toReadableString(HashSet<Style> styles) {
         StringBuilder sb = new StringBuilder();
         for (Style style : styles) {
             sb.append(style.description);

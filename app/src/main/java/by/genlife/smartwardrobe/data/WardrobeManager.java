@@ -2,7 +2,9 @@ package by.genlife.smartwardrobe.data;
 
 import android.content.Context;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +23,6 @@ public class WardrobeManager implements ApparelRepository, Constants {
     private static WardrobeManager instance;
     private Object lock = new Object();
     private List<Apparel> clothes = new ArrayList<Apparel>();
-    private List<String> colors = new ArrayList<String>();
     private OnTaskCompleteListener listener;
 
     public static WardrobeManager getInstance(Context context, OnTaskCompleteListener<Void> listener) {
@@ -133,5 +134,54 @@ public class WardrobeManager implements ApparelRepository, Constants {
             resSet.add(apparel.getColor());
         }
         return new ArrayList<>(resSet);
+    }
+
+    public void putOn(String path, OnTaskCompleteListener listener) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        String today = simpleDateFormat.format(new Date());
+        for (Apparel apparel : clothes) {
+            if (path.equals(apparel.getImagePath())) {
+                apparel.setDate_of_last_wearing(today);
+                apparel.putOn();
+                DBHelper.getInstance().update(apparel, listener);
+                break;
+            }
+        }
+    }
+
+    public List<Apparel> getDirty() {
+        List<Apparel> res = new ArrayList<>();
+        for (Apparel apparel : clothes) {
+            if (apparel.getWearProgress() > 0 && apparel.getRepository().equals(homeRepository)) {
+                res.add(apparel);
+            }
+        }
+        return res;
+    }
+
+    public void putToRepository(Apparel apparel, String repository) {
+        apparel.setRepository(repository);
+        DBHelper.getInstance().update(apparel, OnTaskCompleteListener.getEmptyListener());
+    }
+
+    public void backToWardrobe(Apparel apparel) {
+        putToRepository(apparel, Constants.homeRepository);
+    }
+
+    public static Apparel findByPath(String path) {
+        for (Apparel apparel : instance.clothes) {
+            if (apparel.getImagePath().equals(path))
+                return apparel;
+        }
+        return null;
+    }
+
+    public List<Apparel> getFromRepository(String repositoryName) {
+        ArrayList<Apparel> res = new ArrayList<>();
+        for (Apparel apparel : clothes) {
+            if (apparel.getRepository().equals(repositoryName))
+                res.add(apparel);
+        }
+        return res;
     }
 }

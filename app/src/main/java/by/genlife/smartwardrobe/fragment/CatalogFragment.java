@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ import by.genlife.smartwardrobe.constants.Style;
 import by.genlife.smartwardrobe.data.Apparel;
 import by.genlife.smartwardrobe.data.Parameters;
 import by.genlife.smartwardrobe.data.WardrobeManager;
+import by.genlife.smartwardrobe.listener.OnTaskCompleteListener;
 
 /**
  * Created by NotePad.by on 14.03.2015.
@@ -39,18 +41,10 @@ public class CatalogFragment extends Fragment implements Constants {
     Spinner season, style, color, clean;
     ListView lst;
     ArrayAdapter<String> adapterMain;
-    private static CatalogFragment instance;
     WardrobeManager manager;
     Context context;
     SharedPreferences prefs;
     String curCategory;
-
-    public static CatalogFragment getInstance() {
-        if (instance == null) {
-            instance = new CatalogFragment();
-        }
-        return instance;
-    }
 
     public CatalogFragment() {
     }
@@ -61,17 +55,11 @@ public class CatalogFragment extends Fragment implements Constants {
         View rootView = inflater.inflate(R.layout.catalog, container, false);
         this.context = inflater.getContext();
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        manager = WardrobeManager.getInstance();
+        manager = WardrobeManager.getInstance(context, OnTaskCompleteListener.<Void>getEmptyListener());
         createSpinners(rootView, savedInstanceState);
         backButton = (Button) rootView.findViewById(R.id.btnBack);
         lst = (ListView) rootView.findViewById(R.id.list_of_categories);
         adapterMain = new ArrayAdapter<>(context, R.layout.list_item_category, Category.getCategories());
-        if (prefs.contains(categoryStateStr)) {
-            curCategory = prefs.getString(categoryStateStr, Category.OTHER.getType());
-            showApparelsByCategory(curCategory);
-        } else {
-            lst.setAdapter(adapterMain);
-        }
         lst.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -101,6 +89,12 @@ public class CatalogFragment extends Fragment implements Constants {
                 return false;
             }
         });
+        if (prefs.contains(categoryStateStr)) {
+            curCategory = prefs.getString(categoryStateStr, Category.OTHER.getType());
+            showApparelsByCategory(curCategory);
+        } else {
+            lst.setAdapter(adapterMain);
+        }
         return rootView;
     }
 
@@ -110,7 +104,26 @@ public class CatalogFragment extends Fragment implements Constants {
         showBackButton(true);
         addFilter(builder);
         List<Apparel> tempList = manager.getByParams(builder.build());
-        ListViewAdapter adapter = new ListViewAdapter(context, R.layout.listview_item);
+        ListViewAdapter adapter = new ListViewAdapter(context, new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                v.showContextMenu();
+                //TODO
+                String path = ((TextView)v.findViewById(R.id.path)).getText().toString();
+                WardrobeManager.getInstance().putOn(path, new OnTaskCompleteListener() {
+                    @Override
+                    public void success(Object result) {
+                        lst.invalidateViews();
+                    }
+
+                    @Override
+                    public void error(String message) {
+
+                    }
+                });
+                return false;
+            }
+        });
         adapter.clear();
         adapter.addAll(tempList);
         lst.setAdapter(adapter);

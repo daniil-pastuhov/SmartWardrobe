@@ -21,10 +21,9 @@ import by.genlife.smartwardrobe.listener.OnTaskCompleteListener;
  */
 public class DBHelper extends SQLiteOpenHelper {
 
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 5;
     private static final String DB_NAME = "catalog";
     private static DBHelper instance = null;
-    private Context context;
 
     public DBHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -34,7 +33,6 @@ public class DBHelper extends SQLiteOpenHelper {
         if (instance == null) {
             Context appContext = context.getApplicationContext();
             instance = new DBHelper(appContext);
-            instance.context = appContext;
         }
         return instance;
     }
@@ -48,10 +46,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + DB_NAME + " (" + "name text," + "image_path text primary key,"
+        db.execSQL("CREATE TABLE " + DB_NAME + " (" + "name text," + "image_path text primary key,"
                 + "size text," + "color text," + "temperature_min int," + "temperature_max int,"
                 + "styles text," + "category text," + "tags text," + "wear_progress integer,"
-                + "date_of_buying text," + "date_of_last_wearing text" + ");");
+                + "date_of_buying text," + "date_of_last_wearing text," + "repository text" + ");");
     }
 
     @Override
@@ -62,6 +60,10 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void insert(Apparel data) {
         new InsertTask(data).execute();
+    }
+
+    public void update(Apparel data, OnTaskCompleteListener listener) {
+        new UpdateTask(data, listener).execute();
     }
 
     public void getAll(OnTaskCompleteListener listener) {
@@ -105,8 +107,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 maxT = c.getInt(c.getColumnIndex("temperature_max"));
                 tags = Tags.parseString(c.getString(c.getColumnIndex("tags")));
                 Integer wearProgress = c.getInt(c.getColumnIndex("wear_progress"));
-                Apparel data = new Apparel(imagePath, name, color, category, styles, tags, minT, maxT, date_of_last_wearing, date_of_buying);
-                data.setWearProgress(wearProgress);
+                String repository = c.getString(c.getColumnIndex("repository"));
+                Apparel data = new Apparel(imagePath, name, color, category, styles, tags, minT, maxT, date_of_last_wearing, date_of_buying, wearProgress, repository);
                 all.add(data);
             }
             return all;
@@ -117,7 +119,6 @@ public class DBHelper extends SQLiteOpenHelper {
             listener.success(data);
         }
     }
-
 
     private class DeleteTask extends AsyncTask<Void, Void, Void> {
 
@@ -155,8 +156,50 @@ public class DBHelper extends SQLiteOpenHelper {
             cv.put("image_path", data.getImagePath());
             cv.put("category", data.getCategory().name());
             cv.put("tags", Tags.parseToString(data.getTags()));
+            cv.put("repository", data.getRepository());
             getWritableDatabase().insert(DB_NAME, null, cv);
             return null;
+        }
+    }
+
+    private class UpdateTask extends AsyncTask<Void, Void, Void> {
+
+        private Apparel data;
+        private OnTaskCompleteListener listener;
+
+        public UpdateTask(Apparel data, OnTaskCompleteListener listener) {
+            this.data = data;
+            this.listener = listener;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            listener.success(null);
+            super.onPostExecute(aVoid);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            String sql = "UPDATE " + DB_NAME +
+                    " SET color = ?, "+
+                    " name = ?, "+
+                    " date_of_buying = ?, "+
+                    " date_of_last_wearing = ?, "+
+                    " styles = ?, "+
+                    " temperature_min = ?, "+
+                    " temperature_max = ?, "+
+                    " category = ?, "+
+                    " wear_progress = ?, "+
+                    " tags = ?, "+
+                    " repository = ? " +
+                    "WHERE image_path = ? ";
+            Object[] bindArgs = new Object[]{data.getColor(), data.getName(), data.getDate_of_buying(),
+                    data.getDate_of_last_wearing(), Style.parseToString(data.getStyles()), data.getMinT(),
+                    data.getMaxT(), data.getCategory().name(), data.getWearProgress(), Tags.parseToString(data.getTags()), data.getRepository(), data.getImagePath()};
+            getWritableDatabase().execSQL(sql, bindArgs);
+            return null;
+
+
         }
     }
 

@@ -12,10 +12,8 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterViewFlipper;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -29,9 +27,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import by.genlife.fancycoverflow.FancyCoverFlow;
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.activity.MainActivity;
-import by.genlife.smartwardrobe.adapter.PageViewAdapter;
+import by.genlife.smartwardrobe.adapter.ViewGroupApparelAdapter;
 import by.genlife.smartwardrobe.constants.Category;
 import by.genlife.smartwardrobe.constants.Constants;
 import by.genlife.smartwardrobe.constants.Style;
@@ -40,7 +39,6 @@ import by.genlife.smartwardrobe.data.Parameters;
 import by.genlife.smartwardrobe.data.WardrobeManager;
 import by.genlife.smartwardrobe.listener.OnTaskCompleteListener;
 import by.genlife.smartwardrobe.service.WeatherService;
-
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -57,8 +55,8 @@ public class AutoSearchFragment extends Fragment implements Constants{
     };
     private WardrobeManager manager;
 
-    AdapterViewFlipper suitToDay[];
-    PageViewAdapter[] suitAdapters = new PageViewAdapter[6];
+    FancyCoverFlow suitToDay[];
+    ViewGroupApparelAdapter[] suitAdapters = new ViewGroupApparelAdapter[6];
     Context context;
     TextView tvWeather;
     Spinner styles;
@@ -78,7 +76,7 @@ public class AutoSearchFragment extends Fragment implements Constants{
         context = inflater.getContext();
         View rootView = inflater.inflate(R.layout.today_suit, container, false);
         createViews(rootView);
-        createAdapterViewFlippers(rootView);
+        createViewGroupApparelAdapter(rootView);
         if (savedInstanceState == null) {
         } else {
             if (savedInstanceState.containsKey(STATE_WEATHER)) {
@@ -126,20 +124,12 @@ public class AutoSearchFragment extends Fragment implements Constants{
         return rootView;
     }
 
-    private void createAdapterViewFlippers(View rootView) {
-        final View.OnTouchListener listener = new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                ((AdapterViewFlipper) v).showNext();
-                return false;
-            }
-        };
+    private void createViewGroupApparelAdapter(View rootView) {
         int adapterViewFlipperIds[] = {R.id.vf_head, R.id.vf_under_body, R.id.vf_body_sweater, R.id.vf_body_out, R.id.vf_pants, R.id.vf_boots};
-        suitToDay = new AdapterViewFlipper[adapterViewFlipperIds.length];
+        suitToDay = new FancyCoverFlow[adapterViewFlipperIds.length];
         for (int i = 0; i < adapterViewFlipperIds.length; ++i) {
-            suitToDay[i] = (AdapterViewFlipper) rootView.findViewById(adapterViewFlipperIds[i]);
-            suitToDay[i].setOnTouchListener(listener);
-            suitAdapters[i] = new PageViewAdapter(context, R.layout.mini_item);
+            suitToDay[i] = (FancyCoverFlow) rootView.findViewById(adapterViewFlipperIds[i]);
+            suitAdapters[i] = new ViewGroupApparelAdapter();
             suitToDay[i].setAdapter(suitAdapters[i]);
         }
     }

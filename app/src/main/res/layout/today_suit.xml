@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fcf="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -108,62 +109,60 @@
                 android:text="Подобрать"
                 android:visibility="gone" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <AdapterViewFlipper
-                    android:id="@+id/vf_head"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
-            </LinearLayout>
-
-            <LinearLayout
+            <by.genlife.fancycoverflow.FancyCoverFlow
+                android:id="@+id/vf_head"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:showDividers="middle">
+                fcf:maxRotation="60"
+                fcf:unselectedAlpha="0.5"
+                fcf:unselectedSaturation="0.8"
+                fcf:unselectedScale="0.8" />
 
-                <AdapterViewFlipper
-                    android:id="@+id/vf_under_body"
-                    android:layout_width="160dp"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp" />
-
-                <AdapterViewFlipper
-                    android:id="@+id/vf_body_sweater"
-                    android:layout_width="160dp"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp" />
-
-                <AdapterViewFlipper
-                    android:id="@+id/vf_body_out"
-                    android:layout_width="160dp"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp" />
-            </LinearLayout>
-
-            <LinearLayout
+            <by.genlife.fancycoverflow.FancyCoverFlow
+                android:id="@+id/vf_under_body"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                fcf:maxRotation="45"
+                fcf:unselectedAlpha="0.3"
+                fcf:unselectedSaturation="0.0"
+                fcf:unselectedScale="0.8" />
 
-                <AdapterViewFlipper
-                    android:id="@+id/vf_pants"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
-            </LinearLayout>
-
-            <LinearLayout
+            <by.genlife.fancycoverflow.FancyCoverFlow
+                android:id="@+id/vf_body_sweater"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                fcf:maxRotation="45"
+                fcf:unselectedAlpha="0.3"
+                fcf:unselectedSaturation="0.8"
+                fcf:unselectedScale="0.4" />
 
-                <AdapterViewFlipper
-                    android:id="@+id/vf_boots"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
-            </LinearLayout>
+            <by.genlife.fancycoverflow.FancyCoverFlow
+                android:id="@+id/vf_body_out"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                fcf:maxRotation="45"
+                fcf:unselectedAlpha="0.9"
+                fcf:unselectedSaturation="0.0"
+                fcf:unselectedScale="0.4" />
+
+            <by.genlife.fancycoverflow.FancyCoverFlow
+                android:id="@+id/vf_pants"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                fcf:maxRotation="45"
+                fcf:unselectedAlpha="0.3"
+                fcf:unselectedSaturation="0.0"
+                fcf:unselectedScale="0.4" />
+
+            <by.genlife.fancycoverflow.FancyCoverFlow
+                android:id="@+id/vf_boots"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                fcf:maxRotation="45"
+                fcf:unselectedAlpha="0.3"
+                fcf:unselectedSaturation="0.0"
+                fcf:unselectedScale="0.4" />
+
         </LinearLayout>
     </ScrollView>
 </FrameLayout>

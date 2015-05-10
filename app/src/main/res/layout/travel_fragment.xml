@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fcf="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <ScrollView
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <Button
+                android:id="@+id/show_params"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@android:drawable/ic_menu_more"
+                android:drawableRight="@android:drawable/ic_menu_more"
+                android:padding="10dp"
+                android:text="@string/show_params"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/search_params"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:rowCount="2">
+
+                    <CheckBox
+                        android:id="@+id/cb_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/style_asf"/>
+
+                    <Spinner
+                        android:id="@+id/style_spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <CheckBox
+                        android:id="@+id/cb_color"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/color_asf" />
+
+                    <Spinner
+                        android:id="@+id/color_spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </GridLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/cb_new"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_asf" />
+
+                    <CheckBox
+                        android:id="@+id/cb_clean"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/clean_asf"/>
+
+                    <CheckBox
+                        android:id="@+id/cb_for_weather"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/for_weather_asf"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/find"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@android:drawable/ic_menu_search"
+                android:text="Подобрать"
+                android:visibility="gone" />
+
+            <by.genlife.fancycoverflow.FancyCoverFlow
+                android:id="@+id/fancyCoverFlow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                fcf:maxRotation="45"
+                fcf:unselectedAlpha="0.3"
+                fcf:unselectedSaturation="0.0"
+                fcf:unselectedScale="0.4" />
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

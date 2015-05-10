@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import by.genlife.fancycoverflow.FancyCoverFlow;
-import by.genlife.fancycoverflow.FancyCoverFlowAdapter;
+import by.genlife.fancycoverflow.CoverFlowAdapter;
 import by.genlife.smartwardrobe.data.Apparel;
 import by.genlife.smartwardrobe.view.CustomViewGroup;
 
 /**
  * Created by NotePad.by on 07.05.2015.
  */
-public class ViewGroupApparelAdapter extends FancyCoverFlowAdapter {
+public class ViewGroupApparelAdapter extends CoverFlowAdapter {
 
     // =============================================================================
     // Private members
@@ -59,10 +59,10 @@ public class ViewGroupApparelAdapter extends FancyCoverFlowAdapter {
     }
 
     public void clear() {
-
     }
 
     public void addAll(List<Apparel> apparels) {
-
+        content.addAll(apparels);
+        notifyDataSetChanged();
     }
 }

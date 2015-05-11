@@ -1,9 +1,27 @@
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/transparent_dark_gray"
-    android:choiceMode="singleChoice"
-    android:divider="@color/transparent_gray"
-    android:dividerHeight="0dp"
-    tools:context=".NavigationDrawerFragment" />
+    android:background="@color/lite_back"
+    android:divider="@android:drawable/divider_horizontal_dark"
+    android:showDividers="middle"
+    android:orientation="vertical">
+
+    <ListView
+        android:id="@+id/cur_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/lite_back"
+        android:choiceMode="singleChoice"
+        android:divider="@color/transparent_gray"
+        android:dividerHeight="0dp"
+        tools:context=".NavigationDrawerFragment" />
+
+    <ListView
+        android:id="@+id/items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/lite_back"
+        android:divider="@color/transparent_gray"
+        tools:context=".NavigationDrawerFragment" />
+</LinearLayout>

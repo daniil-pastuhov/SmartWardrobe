@@ -31,13 +31,11 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
     private Filter filter;
     private Object lock = new Object();
     private Context context;
-    private View.OnLongClickListener listener;
 
-    public ListViewAdapter(Context context, View.OnLongClickListener listener) {
+    public ListViewAdapter(Context context) {
         super(context, R.layout.listview_item);
         this.context = context;
         this.inflater = LayoutInflater.from(context);
-        this.listener = listener;
         mObjects = new ArrayList<Apparel>();
     }
 
@@ -83,7 +81,6 @@ public final class ListViewAdapter extends ArrayAdapter<Apparel> {
             }
         }
         convertView.setTag(holder);
-        convertView.setOnLongClickListener(listener);
         return convertView;
     }
 

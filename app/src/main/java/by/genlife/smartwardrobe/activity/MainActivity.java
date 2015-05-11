@@ -1,5 +1,6 @@
 package by.genlife.smartwardrobe.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,9 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.constants.Constants;
@@ -77,6 +81,9 @@ public class MainActivity extends ActionBarActivity
                 newFragment = new TravelFragment();
                 tag = TravelFragment.TAG;
                 break;
+            case 5:
+                newFragment = new AddNewItemFragment();
+                tag = AddNewItemFragment.TAG;
         }
         fragmentManager.beginTransaction()
                 .replace(R.id.container, newFragment, tag).commit();
@@ -115,14 +122,14 @@ public class MainActivity extends ActionBarActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Toast.makeText(this, "Example action.", Toast.LENGTH_SHORT).show();
             return true;
         }
         switch (id) {
-            case R.id.action_add:
-                System.err.println(getSupportFragmentManager().getFragments());
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.container, new AddNewItemFragment(), AddNewItemFragment.TAG).commit();
-                break;
+//            case R.id.action_add:
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.container, new AddNewItemFragment(), AddNewItemFragment.TAG).commit();
+//                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -138,5 +145,14 @@ public class MainActivity extends ActionBarActivity
     protected void onDestroy() {
         stopService(new Intent(this, WeatherService.class));
         super.onDestroy();
+    }
+
+    public void hideKeyboard() {
+            View view = this.getCurrentFocus();
+            if (view != null) {
+                view.clearFocus();
+                InputMethodManager inputManager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
     }
 }

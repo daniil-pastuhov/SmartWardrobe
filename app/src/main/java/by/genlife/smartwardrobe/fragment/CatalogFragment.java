@@ -3,11 +3,15 @@ package by.genlife.smartwardrobe.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.view.ContextMenu;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,7 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -45,10 +48,9 @@ public class CatalogFragment extends Fragment implements Constants {
     Context context;
     SharedPreferences prefs;
     String curCategory;
-
-    public CatalogFragment() {
-    }
-
+    ListViewAdapter adapter;
+    Apparel selectedApparel;
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -57,8 +59,12 @@ public class CatalogFragment extends Fragment implements Constants {
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         manager = WardrobeManager.getInstance(context, OnTaskCompleteListener.<Void>getEmptyListener());
         createSpinners(rootView, savedInstanceState);
+        if (savedInstanceState != null) {
+            selectedApparel = savedInstanceState.getParcelable(STATE_SELECTED_APPAREL);
+        }
         backButton = (Button) rootView.findViewById(R.id.btnBack);
         lst = (ListView) rootView.findViewById(R.id.list_of_categories);
+        registerForContextMenu(lst);
         adapterMain = new ArrayAdapter<>(context, R.layout.list_item_category, Category.getCategories());
         lst.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -66,10 +72,10 @@ public class CatalogFragment extends Fragment implements Constants {
                 if (curCategory == null) {
                     curCategory = adapterView.getAdapter().getItem(i).toString();
                     showApparelsByCategory(curCategory);
-                    prefs.edit().putString(categoryStateStr, curCategory).commit();
+                    prefs.edit().putString(categoryStateStr, curCategory).apply();
                 } else {
                     curCategory = null;
-                    prefs.edit().remove(categoryStateStr).commit();
+                    prefs.edit().remove(categoryStateStr).apply();
                 }
             }
         });
@@ -104,26 +110,7 @@ public class CatalogFragment extends Fragment implements Constants {
         showBackButton(true);
         addFilter(builder);
         List<Apparel> tempList = manager.getByParams(builder.build());
-        ListViewAdapter adapter = new ListViewAdapter(context, new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                v.showContextMenu();
-                //TODO
-                String path = ((TextView)v.findViewById(R.id.path)).getText().toString();
-                WardrobeManager.getInstance().putOn(path, new OnTaskCompleteListener() {
-                    @Override
-                    public void success(Object result) {
-                        lst.invalidateViews();
-                    }
-
-                    @Override
-                    public void error(String message) {
-
-                    }
-                });
-                return false;
-            }
-        });
+        adapter = new ListViewAdapter(context);
         adapter.clear();
         adapter.addAll(tempList);
         lst.setAdapter(adapter);
@@ -223,6 +210,10 @@ public class CatalogFragment extends Fragment implements Constants {
     private void showBackButton(boolean visibility) {
         if (visibility) backButton.setVisibility(View.VISIBLE);
         else backButton.setVisibility(View.GONE);
+        if (visibility)
+            registerForContextMenu(lst);
+        else
+            unregisterForContextMenu(lst);
     }
 
     @Override
@@ -237,6 +228,41 @@ public class CatalogFragment extends Fragment implements Constants {
         pos[0] = color.getSelectedItemPosition();
         pos[0] = clean.getSelectedItemPosition();
         outState.putIntArray(STATE_SPINNER_CATALOG, pos);
+        outState.putParcelable(STATE_SELECTED_APPAREL, selectedApparel);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId() == R.id.list_of_categories) {
+            ListView lv = (ListView) v;
+            AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) menuInfo;
+            selectedApparel = (Apparel) lv.getItemAtPosition(acmi.position);
+            menu.setHeaderIcon(Drawable.createFromPath(selectedApparel.getImagePath()));
+            menu.setHeaderTitle(selectedApparel.getName());
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.element_menu, menu);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (selectedApparel == null) return false;
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                manager.deleteApparel(selectedApparel);
+                adapter.remove(selectedApparel);
+                break;
+            case R.id.action_edit:
+                //TODO
+                break;
+            case R.id.action_wash:
+                WardrobeManager.getInstance().putToRepository(selectedApparel, "wash");
+                selectedApparel.setWearProgress(100);
+                break;
+        }
+        selectedApparel = null;
+        adapter.notifyDataSetChanged();
+        return true;
     }
 
     @Override

@@ -22,6 +22,7 @@ public interface Constants {
     String STATE_STYLES_CHECKED = STATE + "styles.checked";
     String STATE_SPINNER_CATALOG = STATE + "spinner.catalog";
     String STATE_WEATHER = STATE + "weather";
+    String STATE_SELECTED_APPAREL = STATE + "apparel";
 
     int PHOTO_REQUEST_CODE = 54987;
     int CLEAN_LEVEL = 10;

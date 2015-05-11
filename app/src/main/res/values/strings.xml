@@ -45,6 +45,8 @@
     <string name="returnTo">Вернуть в шкаф</string>
     <string name="add_item">Добавить вещь</string>
     <string name="delete_item">Удалить вещь</string>
+    <string name="put_on">Надеть</string>
+    <string name="edit_item">Редактировать</string>
     <string name="find_by_teg_label">Введите ключевые слова через пробел</string>
     <string name="photo_add">Добавить фото</string>
     <string name="image_view_adding">Picture of the apparel.</string>
@@ -58,4 +60,18 @@
     <string name="button_addToWardrobe">Добавить в шкаф!</string>
     <string name="button_back">Назад</string>
     <string name="title_catalog_activity">Каталог</string>
+
+    <!-- Travel fragment-->
+    <string name="day_number">Продолжительность поезки (дней)</string>
+    <string name="bag_size">Размер багажа</string>
+    <string-array name="bag_type">
+        <item>Рюкзак</item>
+        <item>Сумка(м)</item>
+        <item>Сумка(б)</item>
+        <item>Чемодан</item>
+        <item>Машина</item>
+    </string-array>
+
+    <!-- FancyFlow-->
+    <string name="button_put_on">Надеть</string>
 </resources>

@@ -4,11 +4,13 @@ import android.content.Context;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import by.genlife.smartwardrobe.constants.Category;
 import by.genlife.smartwardrobe.constants.Constants;
@@ -183,5 +185,19 @@ public class WardrobeManager implements ApparelRepository, Constants {
                 res.add(apparel);
         }
         return res;
+    }
+
+    public List<Apparel> toTravel(List<Style> styles, Parameters parameters, int size) {
+        List<Apparel> res = new ArrayList<>();
+        for (Apparel apparel : clothes) {
+            if (!apparel.getStyles().retainAll(styles)) {
+                res.add(apparel);
+            }
+        }
+        Collections.shuffle(res, new Random(System.currentTimeMillis()));
+        if (size < res.size())
+            return res.subList(0, size);
+        else
+            return res;
     }
 }

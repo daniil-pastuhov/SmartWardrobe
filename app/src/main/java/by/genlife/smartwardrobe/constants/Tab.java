@@ -8,7 +8,8 @@ public enum Tab {
     CATALOG("Каталог"),
     SEARCHING("Поиск"),
     WASHING("Корзина для стирки"),
-    TRAVEL("В путешествие");
+    TRAVEL("В путешествие"),
+    ADD_ELEMENT("Добавить вещь");
 
     private String description;
 

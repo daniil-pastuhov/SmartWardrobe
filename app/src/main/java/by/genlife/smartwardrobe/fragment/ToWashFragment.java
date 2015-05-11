@@ -8,12 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.activity.MainActivity;
 import by.genlife.smartwardrobe.adapter.ListViewAdapter;
-import by.genlife.smartwardrobe.data.Apparel;
 import by.genlife.smartwardrobe.data.WardrobeManager;
 
 /**
@@ -34,36 +32,36 @@ public class ToWashFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.to_wash_layout, container, false);
         this.context = inflater.getContext();
-        toWash = new ListViewAdapter(context, new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                String path = ((TextView)v.findViewById(R.id.path)).getText().toString();
-                Apparel apparel = WardrobeManager.findByPath(path);
-                WardrobeManager.getInstance().putToRepository(apparel, "wash");
-                apparel.setWearProgress(100);
-                inWash.add(apparel);
-                toWash.remove(apparel);
-                inWash.notifyDataSetChanged();
-                toWash.notifyDataSetChanged();
-                return false;
-            }
-        });
+        toWash = new ListViewAdapter(context);//, new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                String path = ((TextView)v.findViewById(R.id.path)).getText().toString();
+//                Apparel apparel = WardrobeManager.findByPath(path);
+//                WardrobeManager.getInstance().putToRepository(apparel, "wash");
+//                apparel.setWearProgress(100);
+//                inWash.add(apparel);
+//                toWash.remove(apparel);
+//                inWash.notifyDataSetChanged();
+//                toWash.notifyDataSetChanged();
+//                return false;
+//            }
+//        });
         toWash.addAll(WardrobeManager.getInstance().getDirty());
         ListView toWashList = ((ListView) rootView.findViewById(R.id.lvToWash));
         toWashList.setAdapter(toWash);
-        inWash = new ListViewAdapter(context, new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                String path = ((TextView)v.findViewById(R.id.path)).getText().toString();
-                Apparel apparel = WardrobeManager.findByPath(path);
-                apparel.setWearProgress(0);
-                WardrobeManager.getInstance().backToWardrobe(apparel);
-                inWash.remove(apparel);
-                inWash.notifyDataSetChanged();
-                toWash.notifyDataSetChanged();
-                return false;
-            }
-        });
+        inWash = new ListViewAdapter(context); //, new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//                String path = ((TextView)v.findViewById(R.id.path)).getText().toString();
+//                Apparel apparel = WardrobeManager.findByPath(path);
+//                apparel.setWearProgress(0);
+//                WardrobeManager.getInstance().backToWardrobe(apparel);
+//                inWash.remove(apparel);
+//                inWash.notifyDataSetChanged();
+//                toWash.notifyDataSetChanged();
+//                return false;
+//            }
+//        });
         inWash.addAll(WardrobeManager.getInstance().getFromRepository("wash"));
         ListView fromWashList = ((ListView) rootView.findViewById(R.id.lvFromWashWash));
         fromWashList.setAdapter(inWash);

@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -41,7 +40,7 @@ public class FindByTagFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.find_by_teg_layout, container, false);
         this.context = inflater.getContext();
-        results = new ListViewAdapter(context, null);
+        results = new ListViewAdapter(context);
         ((ListView) rootView.findViewById(R.id.lvFounded)).setAdapter(results);
         searchStr = (EditText) rootView.findViewById(R.id.tags);
         noResult = rootView.findViewById(R.id.no_result);
@@ -61,22 +60,10 @@ public class FindByTagFragment extends Fragment {
                 } else {
                     noResult.setVisibility(View.VISIBLE);
                 }
-                hideKeyboard();
+                ((MainActivity)getActivity()).hideKeyboard();
             }
         });
         return rootView;
-    }
-
-    private void hideKeyboard() {
-        Activity activity = getActivity();
-        if (activity != null) {
-            View view = activity.getCurrentFocus();
-            if (view != null) {
-                view.clearFocus();
-                InputMethodManager inputManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            }
-        }
     }
 
     @Override

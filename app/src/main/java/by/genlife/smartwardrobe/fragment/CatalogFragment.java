@@ -256,8 +256,11 @@ public class CatalogFragment extends Fragment implements Constants {
                 //TODO
                 break;
             case R.id.action_wash:
-                WardrobeManager.getInstance().putToRepository(selectedApparel, "wash");
+                manager.putToRepository(selectedApparel, "wash");
                 selectedApparel.setWearProgress(100);
+                break;
+            case R.id.action_put_on:
+                manager.putOn(selectedApparel.getImagePath(), OnTaskCompleteListener.getEmptyListener());
                 break;
         }
         selectedApparel = null;

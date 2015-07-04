@@ -25,4 +25,5 @@ dependencies {
     compile 'io.reactivex:rxandroid:0.25.0'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile project(':fancycoverflow')
+    compile 'com.jakewharton:butterknife:7.0.1'
 }

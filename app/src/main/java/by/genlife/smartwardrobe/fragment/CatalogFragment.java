@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.activity.MainActivity;
 import by.genlife.smartwardrobe.adapter.ListViewAdapter;
@@ -46,8 +47,8 @@ public class CatalogFragment extends Fragment implements Constants {
 
     final String categoryStateStr = "categoryState";
     @Bind(R.id.btnBack) Button backButton;
-    Spinner season, style, color, clean;
-    ListView lst;
+    @Bind({R.id.spinner2, R.id.spinner3, R.id.spinner4, R.id.spinner5}) Spinner season, style, color, clean;
+    @Bind(R.id.list_of_categories) ListView lst;
     ArrayAdapter<String> adapterMain;
     WardrobeManager manager;
     Context context;
@@ -60,6 +61,7 @@ public class CatalogFragment extends Fragment implements Constants {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.catalog, container, false);
+        ButterKnife.bind(this, rootView);
         this.context = inflater.getContext();
         prefs = PreferenceManager.getDefaultSharedPreferences(context);
         manager = WardrobeManager.getInstance(context, OnTaskCompleteListener.<Void>getEmptyListener());
@@ -67,7 +69,6 @@ public class CatalogFragment extends Fragment implements Constants {
         if (savedInstanceState != null) {
             selectedApparel = savedInstanceState.getParcelable(STATE_SELECTED_APPAREL);
         }
-        lst = (ListView) rootView.findViewById(R.id.list_of_categories);
         registerForContextMenu(lst);
         adapterMain = new ArrayAdapter<>(context, R.layout.list_item_category, Category.getCategories());
         lst.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -83,9 +84,6 @@ public class CatalogFragment extends Fragment implements Constants {
                 }
             }
         });
-        //TODO ButterKnife
-//        ButterKnife.bind(getActivity());
-        backButton = (Button) rootView.findViewById(R.id.btnBack);
         backButton.setFocusable(true);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,10 +172,6 @@ public class CatalogFragment extends Fragment implements Constants {
 
             }
         };
-        season = (Spinner) rootView.findViewById(R.id.spinner2);
-        style = (Spinner) rootView.findViewById(R.id.spinner3);
-        color = (Spinner) rootView.findViewById(R.id.spinner4);
-        clean = (Spinner) rootView.findViewById(R.id.spinner5);
         ArrayAdapter<CharSequence> ad1 = ArrayAdapter.createFromResource(context, R.array.season, android.R.layout.simple_spinner_item);
         List<String> styles = Style.getStylesStr();
         List<String> colors = manager.getAllColors();

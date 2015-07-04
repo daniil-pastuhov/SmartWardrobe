@@ -3,20 +3,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-            android:id="@+id/action_delete"
-            android:orderInCategory="3"
-            android:title="@string/delete_item"/>
+        android:id="@+id/action_delete"
+        android:orderInCategory="3"
+        android:title="@string/delete_item" />
     <item
-            android:id="@+id/action_wash"
-            android:orderInCategory="2"
-            android:title="@string/wash"/>
+        android:id="@+id/action_wash"
+        android:orderInCategory="2"
+        android:title="@string/wash" />
     <item
         android:id="@+id/action_put_on"
         android:orderInCategory="0"
-        android:title="@string/put_on"/>
+        android:title="@string/put_on" />
 
     <item
         android:id="@+id/action_edit"
         android:orderInCategory="1"
-        android:title="@string/edit_item"/>
+        android:title="@string/edit_item" />
+
+    <item
+        android:id="@+id/action_share"
+        android:orderInCategory="4"
+        android:title="@string/share" />
+
+    <item
+        android:id="@+id/action_to_favorite"
+        android:orderInCategory="5"
+        android:title="@string/to_favorite" />
 </menu>

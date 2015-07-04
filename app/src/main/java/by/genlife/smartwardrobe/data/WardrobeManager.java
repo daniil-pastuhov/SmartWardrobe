@@ -151,6 +151,10 @@ public class WardrobeManager implements ApparelRepository, Constants {
         }
     }
 
+    public void editApparel(Apparel apparel) {
+        DBHelper.getInstance().update(apparel, OnTaskCompleteListener.getEmptyListener());
+    }
+
     public List<Apparel> getDirty() {
         List<Apparel> res = new ArrayList<>();
         for (Apparel apparel : clothes) {

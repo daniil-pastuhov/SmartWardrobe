@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -36,6 +37,7 @@ import by.genlife.smartwardrobe.activity.MainActivity;
 import by.genlife.smartwardrobe.constants.Category;
 import by.genlife.smartwardrobe.constants.Constants;
 import by.genlife.smartwardrobe.constants.Style;
+import by.genlife.smartwardrobe.constants.Tags;
 import by.genlife.smartwardrobe.data.Apparel;
 import by.genlife.smartwardrobe.data.WardrobeManager;
 import by.genlife.smartwardrobe.listener.OnTaskCompleteListener;
@@ -53,6 +55,7 @@ public class AddNewItemFragment extends Fragment implements Constants {
     EditText tmin, tmax, name, color, tags;
     LinearLayout styleLayout;
     boolean[] styleArr;
+    boolean isEditMode = false;
 
     public AddNewItemFragment() {
     }
@@ -129,7 +132,23 @@ public class AddNewItemFragment extends Fragment implements Constants {
                 }
             }
         });
+        isEditMode();
         return rootView;
+    }
+
+    private void isEditMode() {
+        Bundle args = getArguments();
+        if (args != null && args.containsKey(EXTRA_APPAREL)) {
+            isEditMode = true;
+            Apparel apparel = args.getParcelable(EXTRA_APPAREL);
+            thumbnail.setImageURI(Uri.parse("file:\\" + apparel.getImagePath()));
+            thumbnail.setVisibility(View.VISIBLE);
+            tmin.setText(apparel.getMinT().toString());
+            tmax.setText(apparel.getMaxT().toString());
+            name.setText(apparel.getName());
+            color.setText(apparel.getColor());
+            tags.setText(Tags.parseToString(apparel.getTags()));
+        }
     }
 
     private void reset() {

@@ -46,6 +46,8 @@
     <string name="add_item">Добавить вещь</string>
     <string name="delete_item">Удалить вещь</string>
     <string name="put_on">Надеть</string>
+    <string name="share">Поделиться с друзьями</string>
+    <string name="to_favorite">В избранное</string>
     <string name="edit_item">Редактировать</string>
     <string name="find_by_teg_label">Введите ключевые слова через пробел</string>
     <string name="photo_add">Добавить фото</string>

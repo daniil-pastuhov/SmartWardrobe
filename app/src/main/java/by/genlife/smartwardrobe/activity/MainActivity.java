@@ -53,6 +53,41 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
+    public void showFragment(int position, Bundle bundle) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment newFragment = null;
+        curFragment = position;
+        String tag = null;
+        switch (position) {
+            case 0:
+                newFragment = new AutoSearchFragment();
+                tag = AutoSearchFragment.TAG;
+                break;
+            case 1:
+                newFragment = new CatalogFragment();
+                tag = CatalogFragment.TAG;
+                break;
+            case 2:
+                newFragment = new FindByTagFragment();
+                tag = FindByTagFragment.TAG;
+                break;
+            case 3:
+                newFragment = new ToWashFragment();
+                tag = ToWashFragment.TAG;
+                break;
+            case 4:
+                newFragment = new TravelFragment();
+                tag = TravelFragment.TAG;
+                break;
+            case 5:
+                newFragment = new AddNewItemFragment();
+                tag = AddNewItemFragment.TAG;
+        }
+        if (bundle != null) newFragment.setArguments(bundle);
+        fragmentManager.beginTransaction()
+                .replace(R.id.container, newFragment, tag).commit();
+    }
+
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments

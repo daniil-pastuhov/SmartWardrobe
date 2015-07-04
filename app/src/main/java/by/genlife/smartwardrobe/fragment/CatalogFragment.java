@@ -2,8 +2,10 @@ package by.genlife.smartwardrobe.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -20,14 +22,17 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.Bind;
 import by.genlife.smartwardrobe.R;
 import by.genlife.smartwardrobe.activity.MainActivity;
 import by.genlife.smartwardrobe.adapter.ListViewAdapter;
 import by.genlife.smartwardrobe.constants.Category;
 import by.genlife.smartwardrobe.constants.Constants;
 import by.genlife.smartwardrobe.constants.Style;
+import by.genlife.smartwardrobe.constants.Tab;
 import by.genlife.smartwardrobe.data.Apparel;
 import by.genlife.smartwardrobe.data.Parameters;
 import by.genlife.smartwardrobe.data.WardrobeManager;
@@ -40,7 +45,7 @@ public class CatalogFragment extends Fragment implements Constants {
     public static final String TAG = CatalogFragment.class.getSimpleName();
 
     final String categoryStateStr = "categoryState";
-    Button backButton;
+    @Bind(R.id.btnBack) Button backButton;
     Spinner season, style, color, clean;
     ListView lst;
     ArrayAdapter<String> adapterMain;
@@ -62,7 +67,6 @@ public class CatalogFragment extends Fragment implements Constants {
         if (savedInstanceState != null) {
             selectedApparel = savedInstanceState.getParcelable(STATE_SELECTED_APPAREL);
         }
-        backButton = (Button) rootView.findViewById(R.id.btnBack);
         lst = (ListView) rootView.findViewById(R.id.list_of_categories);
         registerForContextMenu(lst);
         adapterMain = new ArrayAdapter<>(context, R.layout.list_item_category, Category.getCategories());
@@ -79,6 +83,9 @@ public class CatalogFragment extends Fragment implements Constants {
                 }
             }
         });
+        //TODO ButterKnife
+//        ButterKnife.bind(getActivity());
+        backButton = (Button) rootView.findViewById(R.id.btnBack);
         backButton.setFocusable(true);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -220,8 +227,8 @@ public class CatalogFragment extends Fragment implements Constants {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (curCategory != null)
-            prefs.edit().putString(categoryStateStr, curCategory).commit();
-        else prefs.edit().remove(categoryStateStr).commit();
+            prefs.edit().putString(categoryStateStr, curCategory).apply();
+        else prefs.edit().remove(categoryStateStr).apply();
         int pos[] = new int[4];
         pos[0] = season.getSelectedItemPosition();
         pos[0] = style.getSelectedItemPosition();
@@ -253,7 +260,9 @@ public class CatalogFragment extends Fragment implements Constants {
                 adapter.remove(selectedApparel);
                 break;
             case R.id.action_edit:
-                //TODO
+                Bundle arg = new Bundle();
+                arg.putParcelable(EXTRA_APPAREL, selectedApparel);
+                ((MainActivity)getActivity()).showFragment(Tab.getIndexOf(Tab.ADD_ELEMENT.name()), arg);
                 break;
             case R.id.action_wash:
                 manager.putToRepository(selectedApparel, "wash");
@@ -261,6 +270,18 @@ public class CatalogFragment extends Fragment implements Constants {
                 break;
             case R.id.action_put_on:
                 manager.putOn(selectedApparel.getImagePath(), OnTaskCompleteListener.getEmptyListener());
+                break;
+            case R.id.action_share:
+                ArrayList<Uri> imageUris = new ArrayList<Uri>();
+                imageUris.add(Uri.parse("file:\\"+selectedApparel.getImagePath()));
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+                shareIntent.setType("image/*");
+                startActivity(Intent.createChooser(shareIntent, "Share images to.."));
+                break;
+            case R.id.action_to_favorite:
+                //TODO
                 break;
         }
         selectedApparel = null;
